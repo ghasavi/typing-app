@@ -1,5 +1,6 @@
 package com.example.typingapp.controller;
 
+import com.example.typingapp.dto.AuthResponse;
 import com.example.typingapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,15 +13,25 @@ public class AuthController {
 
     private final UserService service;
 
-    public AuthController(UserService service) { this.service = service; }
+    public AuthController(UserService service) {
+        this.service = service;
+    }
 
     @PostMapping("/register")
     public String register(@RequestBody Map<String, String> body) {
-        return service.register(body.get("username"), body.get("password"));
+
+        return service.register(
+                body.get("username"),
+                body.get("password")
+        );
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> body) {
-        return service.login(body.get("username"), body.get("password"));
+    public AuthResponse login(@RequestBody Map<String, String> body) {
+
+        return service.login(
+                body.get("username"),
+                body.get("password")
+        );
     }
 }

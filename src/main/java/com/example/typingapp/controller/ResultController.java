@@ -1,5 +1,6 @@
 package com.example.typingapp.controller;
 
+import com.example.typingapp.dto.TypingResultResponse;
 import com.example.typingapp.model.TypingResult;
 import com.example.typingapp.service.ResultService;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ResultController {
     }
 
     @PostMapping("/{userId}")
-    public TypingResult saveResult(
+    public TypingResultResponse saveResult(
             @PathVariable Long userId,
             @RequestBody TypingResult result) {
 
@@ -26,7 +27,7 @@ public class ResultController {
     }
 
     @GetMapping
-    public List<TypingResult> getAllResults() {
+    public List<TypingResultResponse> getAllResults() {
         return service.getAllResults();
     }
 }
