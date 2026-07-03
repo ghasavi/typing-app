@@ -7,3 +7,11 @@ export async function getDashboard() {
     return response.data;
 
 }
+
+export async function getDashboardHistory() {
+
+    const response = await api.get("/results/my-results");
+
+    return response.data;
+
+}

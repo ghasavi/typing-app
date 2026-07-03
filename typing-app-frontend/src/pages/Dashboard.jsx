@@ -2,29 +2,54 @@ import { useEffect, useState } from "react";
 
 import Navbar from "../components/Navbar";
 
-import { getDashboard } from "../services/dashboardService";
-
 import "../styles/dashboard.css";
+
+import DashboardChart from "../components/DashboardChart";
+
+import {
+
+    getDashboard,
+
+    getDashboardHistory
+
+} from "../services/dashboardService";
 
 export default function Dashboard(){
 
     const [dashboard,setDashboard]=useState(null);
 
+    const [history,setHistory]=useState([]);
     useEffect(()=>{
 
         async function load(){
 
             try{
 
-                const data=await getDashboard();
+                const summary=await getDashboard();
 
-                setDashboard(data);
+                const results=await getDashboardHistory();
+
+                setDashboard(summary);
+
+                const chartData=results
+
+                    .reverse()
+
+                    .map((result,index)=>({
+
+                        test:index+1,
+
+                        wpm:result.wpm
+
+                    }));
+
+                setHistory(chartData);
 
             }
 
-            catch(err){
+            catch(error){
 
-                console.error(err);
+                console.error(error);
 
             }
 
@@ -136,6 +161,19 @@ export default function Dashboard(){
                     </div>
 
                 </div>
+                <div
+                    className="section"
+                >
+
+                    <DashboardChart
+
+                        data={history}
+
+                    />
+
+                </div>
+
+
 
             </div>
 
