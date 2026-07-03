@@ -1,4 +1,5 @@
 import { useTyping } from "../context/TypingContext";
+import "../styles/typing.css";
 
 export default function TypingParagraph() {
 
@@ -6,48 +7,28 @@ export default function TypingParagraph() {
 
     return (
 
-        <div
-            onClick={() => document.querySelector("textarea")?.focus()}
-            style={{
-                fontSize: "28px",
-                lineHeight: "2",
-                maxWidth: "900px",
-                margin: "0 auto",
-                padding: "20px",
-                minHeight: "180px",
-                cursor: "text",
-                userSelect: "none",
-                wordWrap: "break-word"
-            }}
-        >
+        <div className="typing-wrapper">
 
             {paragraph.split("").map((char, index) => {
 
-                let color = "#888";
+                let color = "#646669";
 
                 if (index < typedText.length) {
 
-                    color =
-                        typedText[index] === char
-                            ? "#22c55e"
-                            : "#ef4444";
+                    color = typedText[index] === char ? "#4caf50" : "#ef4444";
 
                 }
 
+                const isCurrent = index === typedText.length;
+
                 return (
 
-                    <span
-                        key={index}
-                        style={{
-                            color,
-                            backgroundColor:
-                                index === typedText.length
-                                    ? "#3b82f6"
-                                    : "transparent",
-                            borderRadius: "3px"
-                        }}
-                    >
+                    <span key={index} style={{ color }}>
+
                         {char}
+
+                        {isCurrent && <span className="caret"></span>}
+
                     </span>
 
                 );

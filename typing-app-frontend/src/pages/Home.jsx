@@ -1,23 +1,34 @@
 import { useEffect } from "react";
+
 import Navbar from "../components/Navbar";
-import StatsCard from "../components/StatsCard";
-import TypingArea from "../components/TypingArea";
+import DifficultySelector from "../components/DifficultySelector";
 import TypingParagraph from "../components/TypingParagraph";
+import TypingBox from "../components/TypingBox";
 import Timer from "../components/Timer";
 import RestartButton from "../components/RestartButton";
+import StatsCard from "../components/StatsCard";
+
 import { useTyping } from "../context/TypingContext";
 import { getParagraph } from "../services/typingService";
-import DifficultySelector from "../components/DifficultySelector";
+
+import "../styles/home.css";
 
 export default function Home() {
 
     const {
-        setParagraph,
+
         difficulty,
+
+        setParagraph,
+
         wpm,
+
         accuracy,
+
         timeLeft,
+
         isFinished
+
     } = useTyping();
 
     useEffect(() => {
@@ -30,7 +41,9 @@ export default function Home() {
 
                 setParagraph(data.text);
 
-            } catch (error) {
+            }
+
+            catch(error){
 
                 console.error(error);
 
@@ -40,112 +53,106 @@ export default function Home() {
 
         loadParagraph();
 
-    }, [difficulty, setParagraph]);
+    }, [
+
+        difficulty,
+
+        setParagraph
+
+    ]);
 
     return (
 
         <>
+
             <Navbar />
 
-            <div
-                style={{
-                    maxWidth: "1200px",
-                    margin: "40px auto",
-                    padding: "20px"
-                }}
-            >
+            <div className="home-container">
 
-                <h1
-                    style={{
-                        textAlign: "center",
-                        fontSize: "42px",
-                        marginBottom: "10px"
-                    }}
-                >
-                    Welcome to TypingPro
-                </h1>
+                <div className="home-header">
 
-                <p
-                    style={{
-                        textAlign: "center",
-                        color: "#94a3b8",
-                        fontSize: "18px",
-                        marginBottom: "35px"
-                    }}
-                >
-                    Improve your typing speed and accuracy.
-                </p>
+                    <h1>TypingPro</h1>
 
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginBottom: "30px"
-                    }}
-                >
-                    <DifficultySelector />
-                    <Timer />
+                    <p>
+
+                        Improve your typing speed and accuracy.
+
+                    </p>
+
                 </div>
 
-                {(timeLeft === 0 || isFinished) && (
+                <div className="top-controls">
+
+                    <DifficultySelector />
+
+                    <Timer />
+
+                </div>
+
+                <div className="typing-card">
+
+                    <TypingParagraph />
+
+                    <TypingBox />
+
+                </div>
+
+                {
+
+                    isFinished &&
 
                     <h2
+
                         style={{
-                            textAlign: "center",
-                            color: "#ef4444",
-                            marginBottom: "30px"
+
+                            textAlign:"center",
+
+                            marginTop:"25px",
+
+                            color:"#4caf50"
+
                         }}
+
                     >
-                        🎉 Test Finished! Click Restart to try again.
+
+                        🎉 Test Completed!
+
                     </h2>
 
-                )}
+                }
 
-                <TypingParagraph />
-
-                <div
-                    style={{
-                        marginTop: "30px"
-                    }}
-                >
-                    <TypingArea />
-                </div>
-
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        gap: "30px",
-                        marginTop: "45px",
-                        flexWrap: "wrap"
-                    }}
-                >
+                <div className="stats-row">
 
                     <StatsCard
+
                         title="WPM"
+
                         value={wpm}
+
                     />
 
                     <StatsCard
+
                         title="Accuracy"
+
                         value={`${accuracy}%`}
+
                     />
 
                     <StatsCard
+
                         title="Time"
-                        value={timeLeft}
+
+                        value={`${timeLeft}s`}
+
                     />
 
                 </div>
 
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        marginTop: "45px"
-                    }}
-                >
+                <div className="restart-row">
+
                     <RestartButton />
+
                 </div>
 
             </div>

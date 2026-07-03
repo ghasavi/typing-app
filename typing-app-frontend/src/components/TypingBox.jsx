@@ -6,6 +6,8 @@ export default function TypingBox() {
         paragraph,
         typedText,
         setTypedText,
+        cursor,
+        setCursor,
         isTyping,
         setIsTyping,
         timeLeft,
@@ -14,42 +16,41 @@ export default function TypingBox() {
 
     function handleChange(e) {
 
-        if (timeLeft === 0 || isFinished) {
-            return;
-        }
+        if (timeLeft === 0 || isFinished) return;
 
         let value = e.target.value;
 
-        // Prevent typing past the paragraph
-        if (value.length > paragraph.length) {
-            value = value.substring(0, paragraph.length);
-        }
+        if (value.length > paragraph.length) return;
 
         if (!isTyping && value.length > 0) {
             setIsTyping(true);
         }
 
         setTypedText(value);
+        setCursor(value.length); // 🔥 THIS IS THE KEY FIX
 
     }
 
     return (
 
-        <textarea
+        <input
+
             value={typedText}
+
             onChange={handleChange}
+
             disabled={timeLeft === 0 || isFinished}
-            placeholder="Start typing here..."
+
             autoFocus
+
             style={{
-                width: "900px",
-                height: "180px",
-                fontSize: "22px",
-                padding: "15px",
-                resize: "none",
-                borderRadius: "10px",
-                outline: "none"
+
+                position: "absolute",
+                opacity: 0,
+                pointerEvents: "none"
+
             }}
+
         />
 
     );

@@ -1,0 +1,41 @@
+.typing-wrapper{
+
+    position:relative;
+
+    max-width:900px;
+
+    margin:0 auto;
+
+    font-size:28px;
+
+    line-height:2;
+
+    user-select:none;
+
+}
+
+.caret{
+
+    display:inline-block;
+
+    width:2px;
+
+    height:32px;
+
+    background:#3b82f6;
+
+    animation:blink 1s infinite;
+
+    margin-left:2px;
+
+}
+
+@keyframes blink{
+
+    50%{
+
+        opacity:0;
+
+    }
+
+}

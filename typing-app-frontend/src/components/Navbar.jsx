@@ -1,104 +1,68 @@
 import { Link, useNavigate } from "react-router-dom";
+import "../styles/navbar.css";
 
 export default function Navbar() {
 
     const navigate = useNavigate();
 
-    const logout = () => {
+    function logout() {
 
         localStorage.removeItem("token");
 
         navigate("/login");
 
-    };
-
-    const linkStyle = {
-        color: "white",
-        textDecoration: "none",
-        fontSize: "17px",
-        fontWeight: "500",
-        transition: "0.3s"
-    };
+    }
 
     return (
 
-        <nav
-            style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "18px 50px",
-                background: "#1e293b",
-                borderBottom: "1px solid #334155",
-                boxShadow: "0 8px 25px rgba(0,0,0,0.25)"
-            }}
-        >
+        <nav className="navbar">
 
-            <h2
-                style={{
-                    color: "#3b82f6",
-                    fontSize: "30px",
-                    fontWeight: "700",
-                    letterSpacing: "1px"
-                }}
-            >
-                ⌨️ TypingPro
-            </h2>
+            <div className="logo">
 
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "28px"
-                }}
-            >
+                ⌨ TypingPro
+
+            </div>
+
+            <div className="nav-links">
 
                 <Link
                     to="/home"
-                    style={linkStyle}
+                    className="nav-link"
                 >
                     Home
                 </Link>
 
                 <Link
                     to="/leaderboard"
-                    style={linkStyle}
+                    className="nav-link"
                 >
                     Leaderboard
                 </Link>
 
                 <Link
+                    to="/history"
+                    className="nav-link"
+                >
+                    History
+                </Link>
+
+                <Link
                     to="/statistics"
-                    style={linkStyle}
+                    className="nav-link"
                 >
                     Statistics
                 </Link>
 
                 <Link
                     to="/profile"
-                    style={linkStyle}
+                    className="nav-link"
                 >
                     Profile
                 </Link>
 
-                <Link
-                    to="/history"
-                    style={linkStyle}
-                >
-                    History
-                </Link>
-
                 <button
                     onClick={logout}
-                    style={{
-                        background: "#ef4444",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "8px",
-                        padding: "10px 18px",
-                        fontSize: "16px",
-                        fontWeight: "600"
-                    }}
+                    className="logout-btn"
                 >
                     Logout
                 </button>

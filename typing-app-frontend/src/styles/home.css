@@ -1,0 +1,82 @@
+.home-container{
+
+    width:90%;
+    max-width:1200px;
+
+    margin:40px auto;
+
+}
+
+.home-header{
+
+    text-align:center;
+
+    margin-bottom:40px;
+
+}
+
+.home-header h1{
+
+    color:#e2b714;
+
+    font-size:48px;
+
+    margin-bottom:10px;
+
+}
+
+.home-header p{
+
+    color:#646669;
+
+    font-size:18px;
+
+}
+
+.top-controls{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:30px;
+
+    margin-bottom:35px;
+
+}
+
+.typing-card{
+
+    background:#2c2e31;
+
+    border-radius:20px;
+
+    padding:40px;
+
+}
+
+.stats-row{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:30px;
+
+    margin-top:40px;
+
+    flex-wrap:wrap;
+
+}
+
+.restart-row{
+
+    display:flex;
+
+    justify-content:center;
+
+    margin-top:35px;
+
+}

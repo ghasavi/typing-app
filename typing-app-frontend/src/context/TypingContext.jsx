@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { saveResult } from "../services/resultService";
 
 const TypingContext = createContext();
 
@@ -8,7 +7,6 @@ export function TypingProvider({ children }) {
     const TEST_TIME = 60;
 
     const [paragraph, setParagraph] = useState("");
-
     const [difficulty, setDifficulty] = useState("easy");
 
     const [typedText, setTypedText] = useState("");
@@ -19,239 +17,127 @@ export function TypingProvider({ children }) {
 
     const [isFinished, setIsFinished] = useState(false);
 
-    const [resultSaved, setResultSaved] = useState(false);
-
-    const [refreshTrigger, setRefreshTrigger] = useState(false);
+    const [cursor, setCursor] = useState(0);
 
     const [wpm, setWpm] = useState(0);
 
-    const correctCharacters = typedText
-        .split("")
-        .filter((char, index) => char === paragraph[index]).length;
-
     const [accuracy, setAccuracy] = useState(100);
 
-    // ==========================
-    // Accuracy
-    // ==========================
-
+    // -----------------------------
+    // Accuracy (cursor based)
+    // -----------------------------
     useEffect(() => {
 
         if (typedText.length === 0) {
-
             setAccuracy(100);
             return;
+        }
+
+        let correct = 0;
+
+        for (let i = 0; i < typedText.length; i++) {
+
+            if (typedText[i] === paragraph[i]) {
+                correct++;
+            }
 
         }
 
-        setAccuracy(
+        setAccuracy(Math.round((correct / typedText.length) * 100));
 
-            Math.round(
+    }, [typedText, paragraph]);
 
-                (correctCharacters / typedText.length) * 100
-
-            )
-
-        );
-
-    }, [
-
-        typedText,
-
-        correctCharacters
-
-    ]);
-
-    // ==========================
+    // -----------------------------
     // WPM
-    // ==========================
-
+    // -----------------------------
     useEffect(() => {
 
         if (!isTyping) return;
 
-        const elapsedSeconds = TEST_TIME - timeLeft;
+        const elapsed = TEST_TIME - timeLeft;
 
-        if (elapsedSeconds <= 0) return;
+        if (elapsed <= 0) return;
 
-        const minutes = elapsedSeconds / 60;
+        let correct = 0;
 
-        const words = correctCharacters / 5;
+        for (let i = 0; i < typedText.length; i++) {
 
-        setWpm(
+            if (typedText[i] === paragraph[i]) {
+                correct++;
+            }
 
-            Math.round(
+        }
 
-                words / minutes
+        const words = correct / 5;
+        const minutes = elapsed / 60;
 
-            )
+        setWpm(Math.round(words / minutes));
 
-        );
+    }, [typedText, paragraph, timeLeft, isTyping]);
 
-    }, [
-
-        correctCharacters,
-
-        isTyping,
-
-        timeLeft
-
-    ]);
-
-    // ==========================
-    // Finish Test
-    // ==========================
-
+    // -----------------------------
+    // FINISH (IMPORTANT FIX)
+    // -----------------------------
     useEffect(() => {
 
         if (
-
             paragraph.length > 0 &&
-
-            typedText.length >= paragraph.length &&
-
+            cursor === paragraph.length &&
             !isFinished
-
         ) {
 
             setIsFinished(true);
-
             setIsTyping(false);
 
         }
 
-    }, [
+    }, [cursor, paragraph, isFinished]);
 
-        typedText,
-
-        paragraph,
-
-        isFinished
-
-    ]);
-
-    // ==========================
-    // Save Result Automatically
-    // ==========================
-
-    useEffect(() => {
-
-        async function uploadResult() {
-
-            if (
-                resultSaved ||
-                wpm <= 0
-            ) {
-                return;
-            }
-
-            try {
-
-                await saveResult({
-
-                    wpm,
-
-                    accuracy,
-
-                    time: TEST_TIME - timeLeft
-
-                });
-
-                setResultSaved(true);
-
-                // Notify all pages to refresh
-                setRefreshTrigger(previous => !previous);
-
-                console.log("Result saved successfully.");
-
-            } catch (error) {
-
-                console.error(
-                    "Failed to save result",
-                    error
-                );
-
-            }
-
-        }
-
-        if (isFinished || timeLeft === 0) {
-
-            uploadResult();
-
-        }
-
-    }, [
-
-        isFinished,
-
-        timeLeft,
-
-        wpm,
-
-        accuracy,
-
-        resultSaved
-
-    ]);
-
-    // ==========================
-    // Restart Test
-    // ==========================
-
+    // -----------------------------
+    // RESET
+    // -----------------------------
     function resetTest() {
 
         setTypedText("");
-
+        setCursor(0);
         setTimeLeft(TEST_TIME);
-
         setIsTyping(false);
-
         setIsFinished(false);
-
-        setResultSaved(false);
-
         setAccuracy(100);
-
         setWpm(0);
 
     }
 
     return (
 
-        <TypingContext.Provider
+        <TypingContext.Provider value={{
 
-            value={{
+            paragraph,
+            setParagraph,
 
-                paragraph,
-                setParagraph,
+            difficulty,
+            setDifficulty,
 
-                difficulty,
-                setDifficulty,
+            typedText,
+            setTypedText,
 
-                typedText,
-                setTypedText,
+            cursor,
+            setCursor,
 
-                timeLeft,
-                setTimeLeft,
+            timeLeft,
+            setTimeLeft,
 
-                isTyping,
-                setIsTyping,
+            isTyping,
+            setIsTyping,
 
-                isFinished,
-                setIsFinished,
+            isFinished,
 
-                accuracy,
+            wpm,
+            accuracy,
 
-                wpm,
+            resetTest
 
-                refreshTrigger,
-
-                resetTest
-
-            }}
-
-        >
+        }}>
 
             {children}
 
@@ -262,7 +148,5 @@ export function TypingProvider({ children }) {
 }
 
 export function useTyping() {
-
     return useContext(TypingContext);
-
 }
