@@ -1,109 +1,58 @@
-import { useRef } from "react";
 import { useTyping } from "../context/TypingContext";
 
 export default function TypingParagraph() {
 
-    const {
-
-        paragraph,
-
-        typedText
-
-    } = useTyping();
-
-    const inputRef = useRef(null);
+    const { paragraph, typedText } = useTyping();
 
     return (
 
         <div
-
-            onClick={() => {
-
-                const input = document.querySelector("input");
-
-                if (input) input.focus();
-
-            }}
-
+            onClick={() => document.querySelector("textarea")?.focus()}
             style={{
-
-                fontSize: "30px",
-
+                fontSize: "28px",
                 lineHeight: "2",
-
-                maxWidth: "950px",
-
+                maxWidth: "900px",
                 margin: "0 auto",
-
-                padding: "30px",
-
+                padding: "20px",
+                minHeight: "180px",
                 cursor: "text",
-
-                userSelect: "none"
-
+                userSelect: "none",
+                wordWrap: "break-word"
             }}
-
         >
 
-            {
+            {paragraph.split("").map((char, index) => {
 
-                paragraph.split("").map((char, index) => {
+                let color = "#888";
 
-                    let color = "#6b7280";
+                if (index < typedText.length) {
 
-                    let background = "transparent";
+                    color =
+                        typedText[index] === char
+                            ? "#22c55e"
+                            : "#ef4444";
 
-                    if (index < typedText.length) {
+                }
 
-                        if (typedText[index] === char) {
+                return (
 
-                            color = "#22c55e";
+                    <span
+                        key={index}
+                        style={{
+                            color,
+                            backgroundColor:
+                                index === typedText.length
+                                    ? "#3b82f6"
+                                    : "transparent",
+                            borderRadius: "3px"
+                        }}
+                    >
+                        {char}
+                    </span>
 
-                        }
+                );
 
-                        else {
-
-                            color = "#ef4444";
-
-                        }
-
-                    }
-
-                    if (index === typedText.length) {
-
-                        background = "#38bdf8";
-
-                        color = "white";
-
-                    }
-
-                    return (
-
-                        <span
-
-                            key={index}
-
-                            style={{
-
-                                color,
-
-                                background,
-
-                                borderRadius: "3px"
-
-                            }}
-
-                        >
-
-                            {char}
-
-                        </span>
-
-                    );
-
-                })
-
-            }
+            })}
 
         </div>
 

@@ -1,31 +1,37 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { getLeaderboard } from "../services/leaderboardService";
+import { useTyping } from "../context/TypingContext";
+import api from "../api/axios";
 
 export default function Leaderboard() {
 
-    const [results, setResults] = useState([]);
+    const [leaders, setLeaders] = useState([]);
+
+    const { refreshTrigger } = useTyping();
 
     useEffect(() => {
 
-        async function loadLeaderboard() {
+        loadLeaderboard();
 
-            try {
+    }, [refreshTrigger]);
 
-                const data = await getLeaderboard();
-                setResults(data);
+    async function loadLeaderboard() {
 
-            } catch (error) {
+        try {
 
-                console.error(error);
+            const response = await api.get("/results/leaderboard");
 
-            }
+            setLeaders(response.data);
 
         }
 
-        loadLeaderboard();
+        catch (error) {
 
-    }, []);
+            console.error(error);
+
+        }
+
+    }
 
     return (
 
@@ -35,18 +41,16 @@ export default function Leaderboard() {
             <div
                 style={{
                     maxWidth: "900px",
-                    margin: "40px auto",
-                    textAlign: "center"
+                    margin: "40px auto"
                 }}
             >
 
-                <h1>🏆 Leaderboard</h1>
+                <h1>Leaderboard</h1>
 
                 <table
                     style={{
                         width: "100%",
-                        borderCollapse: "collapse",
-                        marginTop: "30px"
+                        borderCollapse: "collapse"
                     }}
                 >
 
@@ -54,11 +58,10 @@ export default function Leaderboard() {
 
                     <tr>
 
-                        <th style={cellStyle}>Rank</th>
-                        <th style={cellStyle}>Username</th>
-                        <th style={cellStyle}>WPM</th>
-                        <th style={cellStyle}>Accuracy</th>
-                        <th style={cellStyle}>Time</th>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>WPM</th>
+                        <th>Accuracy</th>
 
                     </tr>
 
@@ -66,35 +69,17 @@ export default function Leaderboard() {
 
                     <tbody>
 
-                    {results.map((result, index) => (
+                    {leaders.map((user, index) => (
 
-                        <tr key={result.id}>
+                        <tr key={user.id}>
 
-                            <td style={cellStyle}>
-                                {index === 0
-                                    ? "🥇"
-                                    : index === 1
-                                        ? "🥈"
-                                        : index === 2
-                                            ? "🥉"
-                                            : index + 1}
-                            </td>
+                            <td>{index + 1}</td>
 
-                            <td style={cellStyle}>
-                                {result.user.username}
-                            </td>
+                            <td>{user.user.username}</td>
 
-                            <td style={cellStyle}>
-                                {result.wpm}
-                            </td>
+                            <td>{user.wpm}</td>
 
-                            <td style={cellStyle}>
-                                {result.accuracy}%
-                            </td>
-
-                            <td style={cellStyle}>
-                                {result.time}s
-                            </td>
+                            <td>{user.accuracy}%</td>
 
                         </tr>
 
@@ -111,9 +96,3 @@ export default function Leaderboard() {
     );
 
 }
-
-const cellStyle = {
-    border: "1px solid #ddd",
-    padding: "12px",
-    fontSize: "18px"
-};

@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import { getProfile } from "../services/profileService";
 import { changePassword } from "../services/authService";
 import {notifyError, notifyInfo} from "../utils/toast.js";
-
+import { useTyping } from "../context/TypingContext";
 export default function Profile() {
 
     const [profile, setProfile] = useState(null);
@@ -11,6 +11,8 @@ export default function Profile() {
     const [currentPassword, setCurrentPassword] = useState("");
 
     const [newPassword, setNewPassword] = useState("");
+
+    const { refreshTrigger } = useTyping();
 
     useEffect(() => {
 
@@ -32,7 +34,7 @@ export default function Profile() {
 
         loadProfile();
 
-    }, []);
+    }, [refreshTrigger]);
 
     async function handleChangePassword() {
 

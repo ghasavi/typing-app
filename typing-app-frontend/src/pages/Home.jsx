@@ -16,7 +16,8 @@ export default function Home() {
         difficulty,
         wpm,
         accuracy,
-        timeLeft
+        timeLeft,
+        isFinished
     } = useTyping();
 
     useEffect(() => {
@@ -86,7 +87,7 @@ export default function Home() {
                     <Timer />
                 </div>
 
-                {timeLeft === 0 && (
+                {(timeLeft === 0 || isFinished) && (
 
                     <h2
                         style={{

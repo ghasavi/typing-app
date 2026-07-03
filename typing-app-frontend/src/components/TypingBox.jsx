@@ -3,24 +3,34 @@ import { useTyping } from "../context/TypingContext";
 export default function TypingBox() {
 
     const {
+        paragraph,
         typedText,
         setTypedText,
         isTyping,
         setIsTyping,
-        timeLeft
+        timeLeft,
+        isFinished
     } = useTyping();
 
     function handleChange(e) {
 
-        if (timeLeft === 0) {
+        if (timeLeft === 0 || isFinished) {
             return;
         }
 
-        if (!isTyping) {
+        let value = e.target.value;
+
+        // Prevent typing past the paragraph
+        if (value.length > paragraph.length) {
+            value = value.substring(0, paragraph.length);
+        }
+
+        if (!isTyping && value.length > 0) {
             setIsTyping(true);
         }
 
-        setTypedText(e.target.value);
+        setTypedText(value);
+
     }
 
     return (
@@ -28,15 +38,17 @@ export default function TypingBox() {
         <textarea
             value={typedText}
             onChange={handleChange}
-            disabled={timeLeft === 0}
+            disabled={timeLeft === 0 || isFinished}
             placeholder="Start typing here..."
+            autoFocus
             style={{
                 width: "900px",
                 height: "180px",
                 fontSize: "22px",
                 padding: "15px",
                 resize: "none",
-                borderRadius: "10px"
+                borderRadius: "10px",
+                outline: "none"
             }}
         />
 

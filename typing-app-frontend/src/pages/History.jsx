@@ -1,32 +1,35 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { getHistory } from "../services/historyService";
+import { useTyping } from "../context/TypingContext";
+import api from "../api/axios";
 
 export default function History() {
 
     const [results, setResults] = useState([]);
 
+    const { refreshTrigger } = useTyping();
+
     useEffect(() => {
-
-        async function loadHistory() {
-
-            try {
-
-                const data = await getHistory();
-
-                setResults(data);
-
-            } catch (error) {
-
-                console.error(error);
-
-            }
-
-        }
 
         loadHistory();
 
-    }, []);
+    }, [refreshTrigger]);
+
+    async function loadHistory() {
+
+        try {
+
+            const response = await api.get("/results/my-results");
+
+            setResults(response.data);
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
 
     return (
 
@@ -35,20 +38,12 @@ export default function History() {
 
             <div
                 style={{
-                    maxWidth: "1000px",
-                    margin: "40px auto",
-                    padding: "20px"
+                    maxWidth: "900px",
+                    margin: "40px auto"
                 }}
             >
 
-                <h1
-                    style={{
-                        marginBottom: "30px",
-                        textAlign: "center"
-                    }}
-                >
-                    📜 Typing History
-                </h1>
+                <h1>Typing History</h1>
 
                 <table
                     style={{
@@ -61,13 +56,11 @@ export default function History() {
 
                     <tr>
 
-                        <th style={headerStyle}>Date</th>
-
-                        <th style={headerStyle}>WPM</th>
-
-                        <th style={headerStyle}>Accuracy</th>
-
-                        <th style={headerStyle}>Time</th>
+                        <th>ID</th>
+                        <th>WPM</th>
+                        <th>Accuracy</th>
+                        <th>Time</th>
+                        <th>Date</th>
 
                     </tr>
 
@@ -75,24 +68,24 @@ export default function History() {
 
                     <tbody>
 
-                    {results.map((result) => (
+                    {results.map(result => (
 
                         <tr key={result.id}>
 
-                            <td style={cellStyle}>
-                                {new Date(result.createdAt).toLocaleString()}
-                            </td>
+                            <td>{result.id}</td>
 
-                            <td style={cellStyle}>
-                                {result.wpm}
-                            </td>
+                            <td>{result.wpm}</td>
 
-                            <td style={cellStyle}>
-                                {result.accuracy}%
-                            </td>
+                            <td>{result.accuracy}%</td>
 
-                            <td style={cellStyle}>
-                                {result.time}s
+                            <td>{result.time}s</td>
+
+                            <td>
+
+                                {result.createdAt
+                                    ? new Date(result.createdAt).toLocaleString()
+                                    : "-"}
+
                             </td>
 
                         </tr>
@@ -110,19 +103,3 @@ export default function History() {
     );
 
 }
-
-const headerStyle = {
-
-    borderBottom: "2px solid #3b82f6",
-    padding: "15px",
-    textAlign: "center"
-
-};
-
-const cellStyle = {
-
-    padding: "15px",
-    borderBottom: "1px solid #444",
-    textAlign: "center"
-
-};

@@ -6,12 +6,16 @@ export default function TypingArea() {
     const {
 
         typedText,
+
         setTypedText,
 
         paragraph,
 
         isTyping,
+
         setIsTyping,
+
+        isFinished,
 
         timeLeft
 
@@ -27,13 +31,19 @@ export default function TypingArea() {
 
     function handleChange(e) {
 
-        if (timeLeft === 0) return;
+        if (timeLeft <= 0) return;
 
-        if (typedText.length >= paragraph.length) return;
+        if (isFinished) return;
 
         if (!isTyping) {
 
             setIsTyping(true);
+
+        }
+
+        if (e.target.value.length > paragraph.length) {
+
+            return;
 
         }
 
@@ -47,17 +57,21 @@ export default function TypingArea() {
 
             ref={inputRef}
 
+            autoFocus
+
             value={typedText}
 
             onChange={handleChange}
-
-            autoFocus
 
             style={{
 
                 position: "absolute",
 
                 opacity: 0,
+
+                width: 0,
+
+                height: 0,
 
                 pointerEvents: "none"
 

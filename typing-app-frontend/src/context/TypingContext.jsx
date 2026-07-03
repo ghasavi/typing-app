@@ -1,20 +1,40 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { saveResult } from "../services/resultService";
 
 const TypingContext = createContext();
 
 export function TypingProvider({ children }) {
 
+    const TEST_TIME = 60;
+
     const [paragraph, setParagraph] = useState("");
+
     const [difficulty, setDifficulty] = useState("easy");
+
     const [typedText, setTypedText] = useState("");
 
-    const [timeLeft, setTimeLeft] = useState(60);
+    const [timeLeft, setTimeLeft] = useState(TEST_TIME);
+
     const [isTyping, setIsTyping] = useState(false);
 
+    const [isFinished, setIsFinished] = useState(false);
+
+    const [resultSaved, setResultSaved] = useState(false);
+
+    const [refreshTrigger, setRefreshTrigger] = useState(false);
+
     const [wpm, setWpm] = useState(0);
+
+    const correctCharacters = typedText
+        .split("")
+        .filter((char, index) => char === paragraph[index]).length;
+
     const [accuracy, setAccuracy] = useState(100);
 
+    // ==========================
     // Accuracy
+    // ==========================
+
     useEffect(() => {
 
         if (typedText.length === 0) {
@@ -24,61 +44,175 @@ export function TypingProvider({ children }) {
 
         }
 
-        let correct = 0;
+        setAccuracy(
 
-        for (let i = 0; i < typedText.length; i++) {
+            Math.round(
 
-            if (typedText[i] === paragraph[i]) {
+                (correctCharacters / typedText.length) * 100
 
-                correct++;
+            )
 
-            }
+        );
 
-        }
+    }, [
 
-        setAccuracy(Math.round((correct / typedText.length) * 100));
+        typedText,
 
-    }, [typedText, paragraph]);
+        correctCharacters
 
+    ]);
+
+    // ==========================
     // WPM
+    // ==========================
+
     useEffect(() => {
 
-        if (!isTyping) {
+        if (!isTyping) return;
 
-            setWpm(0);
-            return;
-
-        }
-
-        const elapsedSeconds = 60 - timeLeft;
+        const elapsedSeconds = TEST_TIME - timeLeft;
 
         if (elapsedSeconds <= 0) return;
 
-        let correct = 0;
+        const minutes = elapsedSeconds / 60;
 
-        for (let i = 0; i < typedText.length; i++) {
+        const words = correctCharacters / 5;
 
-            if (typedText[i] === paragraph[i]) {
+        setWpm(
 
-                correct++;
+            Math.round(
+
+                words / minutes
+
+            )
+
+        );
+
+    }, [
+
+        correctCharacters,
+
+        isTyping,
+
+        timeLeft
+
+    ]);
+
+    // ==========================
+    // Finish Test
+    // ==========================
+
+    useEffect(() => {
+
+        if (
+
+            paragraph.length > 0 &&
+
+            typedText.length >= paragraph.length &&
+
+            !isFinished
+
+        ) {
+
+            setIsFinished(true);
+
+            setIsTyping(false);
+
+        }
+
+    }, [
+
+        typedText,
+
+        paragraph,
+
+        isFinished
+
+    ]);
+
+    // ==========================
+    // Save Result Automatically
+    // ==========================
+
+    useEffect(() => {
+
+        async function uploadResult() {
+
+            if (
+                resultSaved ||
+                wpm <= 0
+            ) {
+                return;
+            }
+
+            try {
+
+                await saveResult({
+
+                    wpm,
+
+                    accuracy,
+
+                    time: TEST_TIME - timeLeft
+
+                });
+
+                setResultSaved(true);
+
+                // Notify all pages to refresh
+                setRefreshTrigger(previous => !previous);
+
+                console.log("Result saved successfully.");
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to save result",
+                    error
+                );
 
             }
 
         }
 
-        const words = correct / 5;
-        const minutes = elapsedSeconds / 60;
+        if (isFinished || timeLeft === 0) {
 
-        setWpm(Math.round(words / minutes));
+            uploadResult();
 
-    }, [typedText, paragraph, timeLeft, isTyping]);
+        }
+
+    }, [
+
+        isFinished,
+
+        timeLeft,
+
+        wpm,
+
+        accuracy,
+
+        resultSaved
+
+    ]);
+
+    // ==========================
+    // Restart Test
+    // ==========================
 
     function resetTest() {
 
         setTypedText("");
-        setTimeLeft(60);
+
+        setTimeLeft(TEST_TIME);
+
         setIsTyping(false);
+
+        setIsFinished(false);
+
+        setResultSaved(false);
+
         setAccuracy(100);
+
         setWpm(0);
 
     }
@@ -86,7 +220,9 @@ export function TypingProvider({ children }) {
     return (
 
         <TypingContext.Provider
+
             value={{
+
                 paragraph,
                 setParagraph,
 
@@ -102,12 +238,19 @@ export function TypingProvider({ children }) {
                 isTyping,
                 setIsTyping,
 
-                wpm,
+                isFinished,
+                setIsFinished,
+
                 accuracy,
 
+                wpm,
+
+                refreshTrigger,
 
                 resetTest
+
             }}
+
         >
 
             {children}
@@ -119,5 +262,7 @@ export function TypingProvider({ children }) {
 }
 
 export function useTyping() {
+
     return useContext(TypingContext);
+
 }

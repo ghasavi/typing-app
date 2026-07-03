@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getMyResults } from "../services/statisticsService";
+import { useTyping } from "../context/TypingContext";
 
 export default function Statistics() {
 
@@ -11,6 +12,8 @@ export default function Statistics() {
         testsCompleted: 0,
         username: ""
     });
+
+    const { refreshTrigger } = useTyping();
 
     useEffect(() => {
 
@@ -62,7 +65,7 @@ export default function Statistics() {
 
         loadStatistics();
 
-    }, []);
+    }, [refreshTrigger]);
 
     return (
 

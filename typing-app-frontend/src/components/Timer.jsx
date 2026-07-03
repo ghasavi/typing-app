@@ -4,14 +4,22 @@ import { useTyping } from "../context/TypingContext";
 export default function Timer() {
 
     const {
+
         timeLeft,
+
         setTimeLeft,
-        isTyping
+
+        isTyping,
+
+        isFinished
+
     } = useTyping();
 
     useEffect(() => {
 
         if (!isTyping) return;
+
+        if (isFinished) return;
 
         if (timeLeft <= 0) return;
 
@@ -23,10 +31,26 @@ export default function Timer() {
 
         return () => clearInterval(timer);
 
-    }, [isTyping, timeLeft, setTimeLeft]);
+    }, [
+
+        isTyping,
+
+        isFinished,
+
+        timeLeft,
+
+        setTimeLeft
+
+    ]);
 
     return (
-        <h2>Time Remaining: {timeLeft}s</h2>
+
+        <h2>
+
+            Time Remaining: {timeLeft}s
+
+        </h2>
+
     );
 
 }
