@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Navbar from "../components/Navbar";
-
+import RecentTests from "../components/RecentTests";
 import "../styles/dashboard.css";
 
 import DashboardChart from "../components/DashboardChart";
@@ -15,6 +15,8 @@ import {
 } from "../services/dashboardService";
 
 export default function Dashboard(){
+
+    const [recentTests,setRecentTests]=useState([]);
 
     const [dashboard,setDashboard]=useState(null);
 
@@ -44,6 +46,7 @@ export default function Dashboard(){
                     }));
 
                 setHistory(chartData);
+                setRecentTests(results);
 
             }
 
@@ -172,6 +175,12 @@ export default function Dashboard(){
                     />
 
                 </div>
+
+                <RecentTests
+
+                    results={recentTests}
+
+                />
 
 
 

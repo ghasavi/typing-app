@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { saveResult } from "../services/resultService.js";
+import { buildResult } from "../utils/buildResult";
 
 const TypingContext = createContext();
 
@@ -92,6 +94,39 @@ export function TypingProvider({ children }) {
         }
 
     }, [cursor, paragraph, isFinished]);
+
+    useEffect(() => {
+
+        async function submitResult() {
+
+            if (!isFinished) return;
+
+            const result = buildResult({
+
+                wpm,
+                accuracy,
+                time: 60 - timeLeft,
+                difficulty,
+                typedText,
+                paragraph
+
+            });
+
+            try {
+
+                await saveResult(result);
+
+            } catch (err) {
+
+                console.error("Failed to save result", err);
+
+            }
+
+        }
+
+        submitResult();
+
+    }, [isFinished]);
 
     // -----------------------------
     // RESET
