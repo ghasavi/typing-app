@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { getProfile } from "../services/profileService";
+import { changePassword } from "../services/authService";
+import {notifyError, notifyInfo} from "../utils/toast.js";
 
 export default function Profile() {
 
     const [profile, setProfile] = useState(null);
+
+    const [currentPassword, setCurrentPassword] = useState("");
+
+    const [newPassword, setNewPassword] = useState("");
 
     useEffect(() => {
 
@@ -27,6 +33,48 @@ export default function Profile() {
         loadProfile();
 
     }, []);
+
+    async function handleChangePassword() {
+
+        if (!currentPassword || !newPassword) {
+
+            notifyInfo("Please fill in both password fields.");
+
+            return;
+
+        }
+
+        try {
+
+            const message = await changePassword(
+
+                currentPassword,
+
+                newPassword
+
+            );
+
+            notifyInfo(message);
+
+            setCurrentPassword("");
+
+            setNewPassword("");
+
+        } catch (error) {
+
+            if (error.response) {
+
+                alert(error.response.data);
+
+            } else {
+
+                notifyError("Failed to change password.");
+
+            }
+
+        }
+
+    }
 
     if (!profile) {
 
@@ -53,7 +101,7 @@ export default function Profile() {
 
             <div
                 style={{
-                    width: "500px",
+                    width: "600px",
                     margin: "40px auto",
                     padding: "30px",
                     border: "1px solid #ccc",
@@ -61,47 +109,71 @@ export default function Profile() {
                 }}
             >
 
-                <h1
-                    style={{
-                        textAlign: "center"
-                    }}
-                >
+                <h1 style={{ textAlign: "center" }}>
                     My Profile
                 </h1>
 
                 <hr />
 
                 <h3>
-
-                    Username :
-                    {" "}
-                    {profile.username}
-
+                    Username: {profile.username}
                 </h3>
 
                 <h3>
-
-                    Tests Completed :
-                    {" "}
-                    {profile.testsCompleted}
-
+                    Tests Completed: {profile.testsCompleted}
                 </h3>
 
                 <h3>
-
-                    Best WPM :
-                    {" "}
-                    {profile.bestWpm}
-
+                    Best WPM: {profile.bestWpm}
                 </h3>
 
                 <h3>
-
-                    Average Accuracy :
-                    {" "}
-                    {profile.averageAccuracy}%
-
+                    Average Accuracy: {profile.averageAccuracy}%
                 </h3>
+
+                <hr />
+
+                <h2>
+                    Change Password
+                </h2>
+
+                <input
+                    type="password"
+                    placeholder="Current Password"
+                    value={currentPassword}
+                    onChange={(e) =>
+                        setCurrentPassword(e.target.value)
+                    }
+                    style={{
+                        width: "100%",
+                        padding: "10px",
+                        marginBottom: "15px"
+                    }}
+                />
+
+                <input
+                    type="password"
+                    placeholder="New Password"
+                    value={newPassword}
+                    onChange={(e) =>
+                        setNewPassword(e.target.value)
+                    }
+                    style={{
+                        width: "100%",
+                        padding: "10px",
+                        marginBottom: "20px"
+                    }}
+                />
+
+                <button
+                    onClick={handleChangePassword}
+                    style={{
+                        padding: "10px 20px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Change Password
+                </button>
 
             </div>
 

@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { register } from "../services/authService";
+import {
+    notifySuccess,
+    notifyError
+} from "../utils/toast";
 
 export default function Register() {
 
@@ -16,7 +20,7 @@ export default function Register() {
 
         }catch{
 
-            alert("Register Failed");
+            notifyError("Register Failed");
 
         }
 

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
-import TypingBox from "../components/TypingBox";
+import TypingArea from "../components/TypingArea";
 import TypingParagraph from "../components/TypingParagraph";
 import Timer from "../components/Timer";
 import RestartButton from "../components/RestartButton";
@@ -107,7 +107,7 @@ export default function Home() {
                         marginTop: "30px"
                     }}
                 >
-                    <TypingBox />
+                    <TypingArea />
                 </div>
 
                 <div

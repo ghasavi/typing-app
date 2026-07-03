@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { login } from "../services/authService";
-
+import {
+    notifySuccess,
+    notifyError
+} from "../utils/toast";
 export default function Login() {
 
     const [username, setUsername] = useState("");
@@ -19,13 +22,13 @@ export default function Login() {
             localStorage.setItem("userId", data.user.id);
             localStorage.setItem("username", data.user.username);
 
-            alert("Login Successful!");
+            notifySuccess("Login successful!");
 
             window.location.href = "/home";
 
         } catch (error) {
 
-            alert("Invalid username or password!");
+            notifyError("Invalid username or password!");
 
         }
 
