@@ -5,6 +5,8 @@ import com.example.typingapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import com.example.typingapp.dto.ChangePasswordRequest;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,5 +35,23 @@ public class AuthController {
                 body.get("username"),
                 body.get("password")
         );
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(
+            Authentication authentication,
+            @RequestBody ChangePasswordRequest request
+    ) {
+
+        return service.changePassword(
+
+                authentication.getName(),
+
+                request.getCurrentPassword(),
+
+                request.getNewPassword()
+
+        );
+
     }
 }

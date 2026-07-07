@@ -8,6 +8,9 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Statistics from "./pages/Statistics";
 import History from "./pages/History";
+import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminUsers from "./admin/pages/AdminUsers";
+import AdminParagraphs from "./admin/pages/AdminParagraphs";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -17,6 +20,33 @@ function App() {
     return (
 
         <Routes>
+
+            <Route
+                path="/admin/dashboard"
+                element={
+                    <ProtectedRoute>
+                        <AdminDashboard />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/admin/users"
+                element={
+                    <ProtectedRoute>
+                        <AdminUsers />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/admin/paragraphs"
+                element={
+                    <ProtectedRoute>
+                        <AdminParagraphs />
+                    </ProtectedRoute>
+                }
+            />
 
             <Route
                 path="/"

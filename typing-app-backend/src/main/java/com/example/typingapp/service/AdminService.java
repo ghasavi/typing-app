@@ -1,0 +1,130 @@
+package com.example.typingapp.service;
+
+import com.example.typingapp.dto.AdminDashboardResponse;
+import com.example.typingapp.model.TypingResult;
+import com.example.typingapp.repository.ParagraphRepository;
+import com.example.typingapp.repository.TypingResultRepository;
+import com.example.typingapp.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import com.example.typingapp.dto.AdminUserResponse;
+import com.example.typingapp.model.User;
+import com.example.typingapp.model.Role;
+
+import java.util.stream.Collectors;
+
+import java.util.List;
+
+@Service
+public class AdminService {
+
+    private final UserRepository userRepository;
+
+    private final TypingResultRepository resultRepository;
+
+    private final ParagraphRepository paragraphRepository;
+
+    public AdminService(
+            UserRepository userRepository,
+            TypingResultRepository resultRepository,
+            ParagraphRepository paragraphRepository
+    ) {
+
+        this.userRepository = userRepository;
+        this.resultRepository = resultRepository;
+        this.paragraphRepository = paragraphRepository;
+
+    }
+
+    public AdminDashboardResponse getDashboard() {
+
+        long users = userRepository.count();
+
+        long tests = resultRepository.count();
+
+        long paragraphs = paragraphRepository.count();
+
+        List<TypingResult> results = resultRepository.findAll();
+
+        double averageWpm = results.stream()
+
+                .mapToInt(TypingResult::getWpm)
+
+                .average()
+
+                .orElse(0);
+
+        return new AdminDashboardResponse(
+
+                users,
+
+                tests,
+
+                paragraphs,
+
+                Math.round(averageWpm * 10.0) / 10.0
+
+        );
+
+    }
+    public List<AdminUserResponse> getUsers() {
+
+        return userRepository.findAll()
+
+                .stream()
+
+                .map(user -> new AdminUserResponse(
+
+                        user.getId(),
+
+                        user.getUsername(),
+
+                        user.getRole().name(),
+
+                        user.getResults().size(),
+
+                        user.getCreatedAt().toLocalDate().toString()
+
+                ))
+
+                .collect(Collectors.toList());
+
+    }
+    public void deleteUser(Long id, String currentUsername) {
+
+        User currentUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
+
+        User userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Prevent deleting yourself
+        if (currentUser.getId().equals(userToDelete.getId())) {
+
+            throw new RuntimeException("You cannot delete your own account.");
+
+        }
+
+        // Prevent deleting the last admin
+        if (userToDelete.getRole() == Role.ADMIN) {
+
+            long adminCount = userRepository.findAll()
+
+                    .stream()
+
+                    .filter(user -> user.getRole() == Role.ADMIN)
+
+                    .count();
+
+            if (adminCount <= 1) {
+
+                throw new RuntimeException("Cannot delete the last administrator.");
+
+            }
+
+        }
+
+        userRepository.delete(userToDelete);
+
+    }
+
+}

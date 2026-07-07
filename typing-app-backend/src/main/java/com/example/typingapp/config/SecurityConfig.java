@@ -36,12 +36,20 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/typing/**"
                         ).permitAll()
 
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/admin/**")
+
+                        .hasRole("ADMIN")
+
+                        .anyRequest()
+
+                        .authenticated()
+
                 )
 
                 .httpBasic(Customizer.withDefaults())

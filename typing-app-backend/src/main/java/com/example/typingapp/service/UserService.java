@@ -1,6 +1,7 @@
 package com.example.typingapp.service;
 
 import com.example.typingapp.dto.AuthResponse;
+import com.example.typingapp.dto.UserResponse;
 import com.example.typingapp.model.User;
 import com.example.typingapp.repository.UserRepository;
 import com.example.typingapp.security.JwtService;
@@ -56,6 +57,30 @@ public class UserService {
 
         String token = jwtService.generateToken(user.getUsername());
 
-        return new AuthResponse(token);
+        UserResponse userResponse = new UserResponse(
+                user.getId(),
+                user.getUsername()
+        );
+
+        return new AuthResponse(token, userResponse);
+    }
+
+    public String changePassword(String username,
+                                 String currentPassword,
+                                 String newPassword) {
+
+        User user = repo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        repo.save(user);
+
+        return "Password changed successfully!";
+
     }
 }
