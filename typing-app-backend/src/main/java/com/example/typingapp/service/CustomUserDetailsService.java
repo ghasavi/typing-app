@@ -2,11 +2,8 @@ package com.example.typingapp.service;
 
 import com.example.typingapp.model.User;
 import com.example.typingapp.repository.UserRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -24,7 +21,16 @@ public class CustomUserDetailsService implements UserDetailsService {
             throws UsernameNotFoundException {
 
         User user = userRepository.findByUsername(username)
+
+        System.out.println(
+                "LOGIN USER = " +
+                        user.getUsername() +
+                        " ROLE = " +
+                        user.getRole()
+        );
+
                 .orElseThrow(() ->
+
                         new UsernameNotFoundException("User not found"));
 
         return org.springframework.security.core.userdetails.User
@@ -33,19 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
                 .password(user.getPassword())
 
-                .authorities(
-
-                        List.of(
-
-                                new SimpleGrantedAuthority(
-
-                                        "ROLE_" + user.getRole().name()
-
-                                )
-
-                        )
-
-                )
+                .roles(user.getRole().name())   // <-- IMPORTANT
 
                 .build();
 

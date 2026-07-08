@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import "../../styles/admin.css";
 
 export default function AdminSidebar() {
 
@@ -14,76 +15,48 @@ export default function AdminSidebar() {
 
     return (
 
-        <div
-            style={{
+        <div className="admin-sidebar">
 
-                width: "250px",
+            <h2>
 
-                background: "#1f2937",
+                ⌨ TypingPro
 
-                color: "white",
+            </h2>
 
-                minHeight: "100vh",
-
-                display: "flex",
-
-                flexDirection: "column",
-
-                padding: "30px 20px"
-
-            }}
-        >
-
-            <h2
+            <p
                 style={{
+                    color: "#94a3b8",
                     marginBottom: "40px"
                 }}
             >
-                ⌨ TypingPro Admin
-            </h2>
+                Admin Panel
+            </p>
 
-            <Link
-                to="/admin/dashboard"
-                style={linkStyle}
-            >
+            <Link to="/admin/dashboard" className="admin-link">
+
                 📊 Dashboard
+
             </Link>
 
-            <Link
-                to="/admin/users"
-                style={linkStyle}
-            >
+            <Link to="/admin/users" className="admin-link">
+
                 👥 Users
+
             </Link>
 
-            <Link
-                to="/admin/paragraphs"
-                style={linkStyle}
-            >
+            <Link to="/admin/paragraphs" className="admin-link">
+
                 📝 Paragraphs
+
             </Link>
 
             <div style={{ flex: 1 }} />
 
             <button
 
+                className="admin-logout"
+
                 onClick={logout}
-
-                style={{
-
-                    background: "#ef4444",
-
-                    color: "white",
-
-                    border: "none",
-
-                    borderRadius: "8px",
-
-                    padding: "12px",
-
-                    cursor: "pointer"
-
-                }}
 
             >
 
@@ -96,15 +69,3 @@ export default function AdminSidebar() {
     );
 
 }
-
-const linkStyle = {
-
-    color: "white",
-
-    textDecoration: "none",
-
-    marginBottom: "18px",
-
-    fontSize: "18px"
-
-};

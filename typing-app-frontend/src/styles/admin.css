@@ -1,0 +1,195 @@
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #0f172a;
+    color: white;
+}
+
+.admin-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.admin-title {
+    font-size: 38px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+    gap: 25px;
+}
+
+.admin-card {
+    background: #1e293b;
+    border-radius: 15px;
+    padding: 30px;
+    transition: .25s;
+    border: 1px solid #334155;
+}
+
+.admin-card:hover {
+
+    transform: translateY(-6px);
+
+    border-color: #3b82f6;
+
+}
+
+.admin-card-title {
+
+    color: #94a3b8;
+
+    font-size: 18px;
+
+    margin-bottom: 15px;
+
+}
+
+.admin-card-value {
+
+    font-size: 46px;
+
+    font-weight: bold;
+
+}
+
+.admin-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: #1e293b;
+
+    border-radius: 15px;
+
+    overflow: hidden;
+
+}
+
+.admin-table th {
+
+    background: #334155;
+
+    padding: 18px;
+
+    text-align: left;
+
+}
+
+.admin-table td {
+
+    padding: 18px;
+
+    border-top: 1px solid #334155;
+
+}
+
+.admin-table tr:hover {
+
+    background: #263548;
+
+}
+
+.admin-search {
+
+    width: 320px;
+
+    padding: 12px;
+
+    margin-bottom: 25px;
+
+    border-radius: 10px;
+
+    border: 1px solid #334155;
+
+    background: #0f172a;
+
+    color: white;
+
+}
+
+.admin-delete {
+
+    background: #ef4444;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+}
+
+.admin-delete:hover {
+
+    background: #dc2626;
+
+}
+
+.admin-sidebar {
+
+    width: 260px;
+
+    background: #020617;
+
+    padding: 30px;
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.admin-link {
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 14px;
+
+    border-radius: 10px;
+
+    margin-bottom: 12px;
+
+    transition: .25s;
+
+}
+
+.admin-link:hover {
+
+    background: #2563eb;
+
+}
+
+.admin-logout {
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #ef4444;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+}
+
+.admin-logout:hover {
+
+    background: #dc2626;
+
+}
