@@ -59,7 +59,8 @@ public class UserService {
 
         UserResponse userResponse = new UserResponse(
                 user.getId(),
-                user.getUsername()
+                user.getUsername(),
+                user.getRole().name()
         );
 
         return new AuthResponse(token, userResponse);

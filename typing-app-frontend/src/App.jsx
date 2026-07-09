@@ -8,12 +8,14 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Statistics from "./pages/Statistics";
 import History from "./pages/History";
+
 import AdminDashboard from "./admin/pages/AdminDashboard";
 import AdminUsers from "./admin/pages/AdminUsers";
 import AdminParagraphs from "./admin/pages/AdminParagraphs";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
 
@@ -21,37 +23,14 @@ function App() {
 
         <Routes>
 
-            <Route
-                path="/admin/dashboard"
-                element={
-                    <ProtectedRoute>
-                        <AdminDashboard />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/admin/users"
-                element={
-                    <ProtectedRoute>
-                        <AdminUsers />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/admin/paragraphs"
-                element={
-                    <ProtectedRoute>
-                        <AdminParagraphs />
-                    </ProtectedRoute>
-                }
-            />
+            {/* Redirect */}
 
             <Route
                 path="/"
                 element={<Navigate to="/login" replace />}
             />
+
+            {/* Public */}
 
             <Route
                 path="/login"
@@ -70,6 +49,8 @@ function App() {
                     </PublicRoute>
                 }
             />
+
+            {/* User */}
 
             <Route
                 path="/home"
@@ -124,6 +105,37 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
+            {/* Admin */}
+
+            <Route
+                path="/admin/dashboard"
+                element={
+                    <AdminRoute>
+                        <AdminDashboard />
+                    </AdminRoute>
+                }
+            />
+
+            <Route
+                path="/admin/users"
+                element={
+                    <AdminRoute>
+                        <AdminUsers />
+                    </AdminRoute>
+                }
+            />
+
+            <Route
+                path="/admin/paragraphs"
+                element={
+                    <AdminRoute>
+                        <AdminParagraphs />
+                    </AdminRoute>
+                }
+            />
+
+            {/* 404 */}
 
             <Route
                 path="*"

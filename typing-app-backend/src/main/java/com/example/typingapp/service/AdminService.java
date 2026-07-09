@@ -78,11 +78,15 @@ public class AdminService {
 
                         user.getUsername(),
 
-                        user.getRole().name(),
+                        user.getRole() == null
+                                ? "USER"
+                                : user.getRole().name(),
 
                         user.getResults().size(),
 
-                        user.getCreatedAt().toLocalDate().toString()
+                        user.getCreatedAt() == null
+                                ? "-"
+                                : user.getCreatedAt().toLocalDate().toString()
 
                 ))
 

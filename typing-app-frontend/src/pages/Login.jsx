@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import {
     notifySuccess,
     notifyError
 } from "../utils/toast";
+
 export default function Login() {
+
+    const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -15,16 +19,22 @@ export default function Login() {
 
             const data = await login(username, password);
 
-            // Save JWT
             localStorage.setItem("token", data.token);
-
-            // Save user information
             localStorage.setItem("userId", data.user.id);
             localStorage.setItem("username", data.user.username);
+            localStorage.setItem("role", data.user.role);
 
             notifySuccess("Login successful!");
 
-            window.location.href = "/home";
+            if (data.user.role === "ADMIN") {
+
+                navigate("/admin/dashboard");
+
+            } else {
+
+                navigate("/home");
+
+            }
 
         } catch (error) {
 
