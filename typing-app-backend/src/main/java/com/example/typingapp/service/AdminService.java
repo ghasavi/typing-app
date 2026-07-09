@@ -86,13 +86,16 @@ public class AdminService {
 
                         user.getCreatedAt() == null
                                 ? "-"
-                                : user.getCreatedAt().toLocalDate().toString()
+                                : user.getCreatedAt().toLocalDate().toString(),
 
-                ))
+                        user.isActive()
+
+                ))   // <-- THIS PARENTHESIS WAS MISSING
 
                 .collect(Collectors.toList());
 
     }
+
     public void deleteUser(Long id, String currentUsername) {
 
         User currentUser = userRepository.findByUsername(currentUsername)
@@ -128,6 +131,46 @@ public class AdminService {
         }
 
         userRepository.delete(userToDelete);
+
+    }
+
+    public void toggleUserStatus(Long id, String currentUsername) {
+
+        User currentUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
+
+        User target = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if(currentUser.getId().equals(target.getId())){
+
+            throw new RuntimeException("You cannot block yourself.");
+
+        }
+
+        if(target.getRole() == Role.ADMIN){
+
+            long adminCount = userRepository.findAll()
+
+                    .stream()
+
+                    .filter(user -> user.getRole() == Role.ADMIN)
+
+                    .filter(User::isActive)
+
+                    .count();
+
+            if(adminCount <= 1){
+
+                throw new RuntimeException("Cannot block the last administrator.");
+
+            }
+
+        }
+
+        target.setActive(!target.isActive());
+
+        userRepository.save(target);
 
     }
 

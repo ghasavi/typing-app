@@ -28,6 +28,9 @@ public class User {
 
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -122,6 +125,14 @@ public class User {
 
         this.results = results;
 
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

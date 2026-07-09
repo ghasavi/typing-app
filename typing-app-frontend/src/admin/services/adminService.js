@@ -74,3 +74,15 @@ export async function deleteParagraph(id) {
     return response.data;
 
 }
+
+export async function toggleUserStatus(id){
+
+    const response = await api.put(
+
+        `/admin/users/${id}/toggle-status`
+
+    );
+
+    return response.data;
+
+}

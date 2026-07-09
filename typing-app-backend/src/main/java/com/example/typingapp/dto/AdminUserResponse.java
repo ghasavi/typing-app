@@ -8,6 +8,8 @@ public class AdminUserResponse {
 
     private String role;
 
+    private boolean active;
+
     private long testsCompleted;
 
     private String createdAt;
@@ -19,16 +21,20 @@ public class AdminUserResponse {
             Long id,
             String username,
             String role,
-            long testsCompleted,
-            String createdAt
+            int testsCompleted,
+            String createdAt,
+            boolean active
     ) {
-
         this.id = id;
         this.username = username;
         this.role = role;
         this.testsCompleted = testsCompleted;
         this.createdAt = createdAt;
+        this.active = active;
+    }
 
+    public boolean isActive() {
+        return active;
     }
 
     public Long getId() {

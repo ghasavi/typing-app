@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import { getUsers, deleteUser } from "../services/adminService";
+import {
+    getUsers,
+    deleteUser,
+    toggleUserStatus
+} from "../services/adminService";
 import { toast } from "react-toastify";
 
 export default function AdminUsers() {
 
     const [users, setUsers] = useState([]);
-
     const [search, setSearch] = useState("");
+
+    const currentUsername = localStorage.getItem("username");
 
     async function loadUsers() {
 
@@ -17,11 +22,11 @@ export default function AdminUsers() {
 
             setUsers(data);
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
+
+            toast.error("Failed to load users.");
 
         }
 
@@ -35,29 +40,55 @@ export default function AdminUsers() {
 
     async function handleDelete(id, username) {
 
-        const confirmed = window.confirm(
-
-            `Delete ${username}?`
-
-        );
-
-        if (!confirmed) return;
+        if (!window.confirm(`Delete ${username}?`)) return;
 
         try {
 
             await deleteUser(id);
 
+            toast.success("User deleted successfully.");
+
             loadUsers();
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             toast.error(
 
                 error.response?.data?.message ||
 
                 "Unable to delete user."
+
+            );
+
+        }
+
+    }
+
+    async function handleToggle(id, active) {
+
+        try {
+
+            await toggleUserStatus(id);
+
+            toast.success(
+
+                active
+
+                    ? "User blocked successfully."
+
+                    : "User unblocked successfully."
+
+            );
+
+            loadUsers();
+
+        } catch (error) {
+
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Unable to update user."
 
             );
 
@@ -79,16 +110,8 @@ export default function AdminUsers() {
 
         <AdminLayout>
 
-            <h1
-                style={{
-
-                    marginBottom: "25px"
-
-                }}
-            >
-
-                Users
-
+            <h1 style={{ marginBottom: "25px" }}>
+                User Management
             </h1>
 
             <input
@@ -99,11 +122,7 @@ export default function AdminUsers() {
 
                 value={search}
 
-                onChange={(e) =>
-
-                    setSearch(e.target.value)
-
-                }
+                onChange={(e) => setSearch(e.target.value)}
 
                 style={{
 
@@ -129,7 +148,13 @@ export default function AdminUsers() {
 
                     borderCollapse: "collapse",
 
-                    background: "#1f2937"
+                    background: "#1f2937",
+
+                    color: "white",
+
+                    borderRadius: "10px",
+
+                    overflow: "hidden"
 
                 }}
 
@@ -137,17 +162,19 @@ export default function AdminUsers() {
 
                 <thead>
 
-                <tr>
+                <tr style={{ background: "#111827" }}>
 
-                    <th>Username</th>
+                    <th style={{ padding: "15px" }}>Username</th>
 
                     <th>Role</th>
+
+                    <th>Status</th>
 
                     <th>Tests</th>
 
                     <th>Joined</th>
 
-                    <th>Action</th>
+                    <th>Actions</th>
 
                 </tr>
 
@@ -159,9 +186,25 @@ export default function AdminUsers() {
 
                     filteredUsers.map(user => (
 
-                        <tr key={user.id}>
+                        <tr
 
-                            <td>{user.username}</td>
+                            key={user.id}
+
+                            style={{
+
+                                textAlign: "center",
+
+                                borderTop: "1px solid #374151"
+
+                            }}
+
+                        >
+
+                            <td style={{ padding: "15px" }}>
+
+                                {user.username}
+
+                            </td>
 
                             <td>
 
@@ -169,15 +212,43 @@ export default function AdminUsers() {
 
                                     user.role === "ADMIN"
 
-                                        ?
+                                        ? "👑 ADMIN"
 
-                                        "👑 ADMIN"
-
-                                        :
-
-                                        "USER"
+                                        : "👤 USER"
 
                                 }
+
+                            </td>
+
+                            <td>
+
+                                <span
+
+                                    style={{
+
+                                        color: user.active
+
+                                            ? "#22c55e"
+
+                                            : "#ef4444",
+
+                                        fontWeight: "bold"
+
+                                    }}
+
+                                >
+
+                                    {
+
+                                        user.active
+
+                                            ? "🟢 Active"
+
+                                            : "🔴 Blocked"
+
+                                    }
+
+                                </span>
 
                             </td>
 
@@ -195,41 +266,127 @@ export default function AdminUsers() {
 
                             <td>
 
-                                <button
+                                {
 
-                                    onClick={() =>
+                                    user.username !== currentUsername && (
 
-                                        handleDelete(
+                                        <>
 
-                                            user.id,
+                                            <button
 
-                                            user.username
+                                                onClick={() =>
 
-                                        )
+                                                    handleToggle(
 
-                                    }
+                                                        user.id,
 
-                                    style={{
+                                                        user.active
 
-                                        background: "#ef4444",
+                                                    )
 
-                                        color: "white",
+                                                }
 
-                                        border: "none",
+                                                style={{
 
-                                        padding: "8px 15px",
+                                                    background: user.active
 
-                                        borderRadius: "6px",
+                                                        ? "#f59e0b"
 
-                                        cursor: "pointer"
+                                                        : "#22c55e",
 
-                                    }}
+                                                    color: "white",
 
-                                >
+                                                    border: "none",
 
-                                    Delete
+                                                    padding: "8px 14px",
 
-                                </button>
+                                                    borderRadius: "6px",
+
+                                                    cursor: "pointer",
+
+                                                    marginRight: "10px"
+
+                                                }}
+
+                                            >
+
+                                                {
+
+                                                    user.active
+
+                                                        ? "Block"
+
+                                                        : "Unblock"
+
+                                                }
+
+                                            </button>
+
+                                            <button
+
+                                                onClick={() =>
+
+                                                    handleDelete(
+
+                                                        user.id,
+
+                                                        user.username
+
+                                                    )
+
+                                                }
+
+                                                style={{
+
+                                                    background: "#ef4444",
+
+                                                    color: "white",
+
+                                                    border: "none",
+
+                                                    padding: "8px 14px",
+
+                                                    borderRadius: "6px",
+
+                                                    cursor: "pointer"
+
+                                                }}
+
+                                            >
+
+                                                Delete
+
+                                            </button>
+
+                                        </>
+
+                                    )
+
+                                }
+
+                                {
+
+                                    user.username === currentUsername && (
+
+                                        <span
+
+                                            style={{
+
+                                                color: "#9ca3af",
+
+                                                fontStyle: "italic"
+
+                                            }}
+
+                                        >
+
+                                            Current User
+
+                                        </span>
+
+                                    )
+
+                                }
 
                             </td>
 

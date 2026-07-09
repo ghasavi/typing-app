@@ -52,4 +52,23 @@ public class AdminController {
 
     }
 
+    @PutMapping("/users/{id}/toggle-status")
+    public void toggleUserStatus(
+
+            @PathVariable Long id,
+
+            Authentication authentication
+
+    ) {
+
+        service.toggleUserStatus(
+
+                id,
+
+                authentication.getName()
+
+        );
+
+    }
+
 }
