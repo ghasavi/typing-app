@@ -1,86 +1,105 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
-import { getDashboard } from "../services/adminService";
-import "../../styles/admin.css";
-import { toast } from "react-toastify";
+import {
+    getDashboard,
+    getActivity
+} from "../services/adminService";
 
-export default function AdminDashboard() {
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    Tooltip,
+    CartesianGrid,
+    ResponsiveContainer
+} from "recharts";
 
-    const [dashboard, setDashboard] = useState(null);
+export default function AdminDashboard(){
 
-    useEffect(() => {
+    const [stats,setStats]=useState({});
+    const [activity,setActivity]=useState([]);
 
-        async function loadDashboard() {
+    useEffect(()=>{
 
-            try {
+        async function load(){
 
-                const data = await getDashboard();
+            setStats(await getDashboard());
 
-                setDashboard(data);
-
-            }
-
-            catch (err) {
-
-                console.error(err);
-
-            }
+            setActivity(await getActivity());
 
         }
 
-        loadDashboard();
+        load();
 
-    }, []);
+    },[]);
 
-    if (!dashboard) {
-
-        return (
-
-            <AdminLayout>
-
-                <h2>Loading Dashboard...</h2>
-
-            </AdminLayout>
-
-        );
-
-    }
-
-    return (
+    return(
 
         <AdminLayout>
 
-            <h1 className="admin-title">
-
-                📊 Dashboard
-
+            <h1 style={{marginBottom:30}}>
+                Dashboard
             </h1>
 
-            <div className="admin-grid">
+            <div
+                style={{
+                    display:"grid",
+                    gridTemplateColumns:"repeat(4,1fr)",
+                    gap:"20px"
+                }}
+            >
 
-                <DashboardCard
-                    icon="👥"
-                    title="Total Users"
-                    value={dashboard.totalUsers}
-                />
+                <Card title="Users" value={stats.users}/>
+                <Card title="Typing Tests" value={stats.tests}/>
+                <Card title="Paragraphs" value={stats.paragraphs}/>
+                <Card title="Average WPM" value={stats.averageWpm}/>
 
-                <DashboardCard
-                    icon="⌨"
-                    title="Total Tests"
-                    value={dashboard.totalTests}
-                />
+            </div>
 
-                <DashboardCard
-                    icon="📝"
-                    title="Paragraphs"
-                    value={dashboard.totalParagraphs}
-                />
+            <div
+                style={{
+                    marginTop:"40px",
+                    background:"#1f2937",
+                    padding:"20px",
+                    borderRadius:"12px"
+                }}
+            >
 
-                <DashboardCard
-                    icon="⚡"
-                    title="Average WPM"
-                    value={dashboard.averageWpm}
-                />
+                <h2 style={{marginBottom:"20px"}}>
+                    Typing Tests (Last 7 Days)
+                </h2>
+
+                <ResponsiveContainer
+                    width="100%"
+                    height={350}
+                >
+
+                    <LineChart data={activity}>
+
+                        <CartesianGrid strokeDasharray="3 3"/>
+
+                        <XAxis dataKey="date"/>
+
+                        <YAxis/>
+
+                        <Tooltip/>
+
+                        <Line
+
+                            type="monotone"
+
+                            dataKey="tests"
+
+                            stroke="#3b82f6"
+
+                            strokeWidth={3}
+
+                        />
+
+                    </LineChart>
+
+                </ResponsiveContainer>
 
             </div>
 
@@ -90,23 +109,29 @@ export default function AdminDashboard() {
 
 }
 
-function DashboardCard({ icon, title, value }) {
+function Card({title,value}){
 
-    return (
+    return(
 
-        <div className="admin-card">
+        <div
 
-            <div className="admin-card-title">
+            style={{
 
-                {icon} {title}
+                background:"#1f2937",
 
-            </div>
+                borderRadius:"12px",
 
-            <div className="admin-card-value">
+                padding:"25px",
 
-                {value}
+                color:"white"
 
-            </div>
+            }}
+
+        >
+
+            <h3>{title}</h3>
+
+            <h1>{value}</h1>
 
         </div>
 

@@ -174,4 +174,42 @@ public class AdminService {
 
     }
 
+    public List<AdminActivityResponse> getActivity() {
+
+        LocalDate today = LocalDate.now();
+
+        List<AdminActivityResponse> response = new ArrayList<>();
+
+        for(int i=6;i>=0;i--){
+
+            LocalDate day = today.minusDays(i);
+
+            long count = resultRepository.findAll()
+
+                    .stream()
+
+                    .filter(r -> r.getCreatedAt()!=null)
+
+                    .filter(r -> r.getCreatedAt().toLocalDate().equals(day))
+
+                    .count();
+
+            response.add(
+
+                    new AdminActivityResponse(
+
+                            day.toString(),
+
+                            count
+
+                    )
+
+            );
+
+        }
+
+        return response;
+
+    }
+
 }

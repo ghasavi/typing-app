@@ -86,3 +86,11 @@ export async function toggleUserStatus(id){
     return response.data;
 
 }
+
+export async function getActivity() {
+
+    const response = await api.get("/admin/activity");
+
+    return response.data;
+
+}

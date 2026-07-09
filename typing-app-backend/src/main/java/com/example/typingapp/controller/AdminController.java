@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.typingapp.dto.AdminUserResponse;
 import org.springframework.security.core.Authentication;
 import java.util.List;
+import com.example.typingapp.dto.AdminActivityResponse;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -68,6 +69,13 @@ public class AdminController {
                 authentication.getName()
 
         );
+
+    }
+
+    @GetMapping("/activity")
+    public List<AdminActivityResponse> activity() {
+
+        return service.getActivity();
 
     }
 
