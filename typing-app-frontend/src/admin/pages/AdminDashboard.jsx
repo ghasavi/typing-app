@@ -1,105 +1,221 @@
 import { useEffect, useState } from "react";
+
 import AdminLayout from "../layouts/AdminLayout";
+
 import {
     getDashboard,
     getActivity
 } from "../services/adminService";
 
 import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
+
+    Line
+
+} from "react-chartjs-2";
+
+import {
+
+    Chart as ChartJS,
+
+    CategoryScale,
+
+    LinearScale,
+
+    PointElement,
+
+    LineElement,
+
     Tooltip,
-    CartesianGrid,
-    ResponsiveContainer
-} from "recharts";
 
-export default function AdminDashboard(){
+    Legend
 
-    const [stats,setStats]=useState({});
-    const [activity,setActivity]=useState([]);
+} from "chart.js";
 
-    useEffect(()=>{
+ChartJS.register(
 
-        async function load(){
+    CategoryScale,
 
-            setStats(await getDashboard());
+    LinearScale,
 
-            setActivity(await getActivity());
+    PointElement,
 
-        }
+    LineElement,
 
-        load();
+    Tooltip,
 
-    },[]);
+    Legend
 
-    return(
+);
+
+export default function AdminDashboard() {
+
+    const [dashboard, setDashboard] = useState({
+
+        totalUsers: 0,
+
+        totalTests: 0,
+
+        totalParagraphs: 0,
+
+        averageWpm: 0
+
+    });
+
+    const [activity, setActivity] = useState([]);
+
+    async function loadDashboard() {
+
+        const data = await getDashboard();
+
+        setDashboard(data);
+
+    }
+
+    async function loadActivity() {
+
+        const data = await getActivity();
+
+        setActivity(data);
+
+    }
+
+    useEffect(() => {
+
+        loadDashboard();
+
+        loadActivity();
+
+        const interval = setInterval(() => {
+
+            loadDashboard();
+
+            loadActivity();
+
+        }, 5000);
+
+        return () => clearInterval(interval);
+
+    }, []);
+
+    const chartData = {
+
+        labels: activity.map(a => a.date),
+
+        datasets: [
+
+            {
+
+                label: "Typing Tests",
+
+                data: activity.map(a => a.tests),
+
+                borderColor: "#3b82f6",
+
+                backgroundColor: "#3b82f633",
+
+                fill: true,
+
+                tension: 0.4
+
+            }
+
+        ]
+
+    };
+
+    return (
 
         <AdminLayout>
 
-            <h1 style={{marginBottom:30}}>
-                Dashboard
+            <h1 style={{ marginBottom: 30 }}>
+
+                Admin Dashboard
+
             </h1>
 
             <div
+
                 style={{
-                    display:"grid",
-                    gridTemplateColumns:"repeat(4,1fr)",
-                    gap:"20px"
+
+                    display: "grid",
+
+                    gridTemplateColumns: "repeat(4,1fr)",
+
+                    gap: 20,
+
+                    marginBottom: 40
+
                 }}
+
             >
 
-                <Card title="Users" value={stats.users}/>
-                <Card title="Typing Tests" value={stats.tests}/>
-                <Card title="Paragraphs" value={stats.paragraphs}/>
-                <Card title="Average WPM" value={stats.averageWpm}/>
+                <Card
+
+                    title="👥 Total Users"
+
+                    value={dashboard.totalUsers}
+
+                />
+
+                <Card
+
+                    title="⌨️ Total Tests"
+
+                    value={dashboard.totalTests}
+
+                />
+
+                <Card
+
+                    title="📄 Paragraphs"
+
+                    value={dashboard.totalParagraphs}
+
+                />
+
+                <Card
+
+                    title="⚡ Avg WPM"
+
+                    value={dashboard.averageWpm}
+
+                />
 
             </div>
 
             <div
+
                 style={{
-                    marginTop:"40px",
+
                     background:"#1f2937",
-                    padding:"20px",
-                    borderRadius:"12px"
+
+                    padding:25,
+
+                    borderRadius:12
+
                 }}
+
             >
 
-                <h2 style={{marginBottom:"20px"}}>
-                    Typing Tests (Last 7 Days)
-                </h2>
+                <h2
 
-                <ResponsiveContainer
-                    width="100%"
-                    height={350}
+                    style={{
+
+                        marginBottom:20
+
+                    }}
+
                 >
 
-                    <LineChart data={activity}>
+                    Activity (Last 7 Days)
 
-                        <CartesianGrid strokeDasharray="3 3"/>
+                </h2>
 
-                        <XAxis dataKey="date"/>
+                <Line
 
-                        <YAxis/>
+                    data={chartData}
 
-                        <Tooltip/>
-
-                        <Line
-
-                            type="monotone"
-
-                            dataKey="tests"
-
-                            stroke="#3b82f6"
-
-                            strokeWidth={3}
-
-                        />
-
-                    </LineChart>
-
-                </ResponsiveContainer>
+                />
 
             </div>
 
@@ -109,9 +225,15 @@ export default function AdminDashboard(){
 
 }
 
-function Card({title,value}){
+function Card({
 
-    return(
+                  title,
+
+                  value
+
+              }) {
+
+    return (
 
         <div
 
@@ -119,9 +241,11 @@ function Card({title,value}){
 
                 background:"#1f2937",
 
-                borderRadius:"12px",
+                borderRadius:12,
 
-                padding:"25px",
+                padding:25,
+
+                textAlign:"center",
 
                 color:"white"
 
@@ -129,9 +253,23 @@ function Card({title,value}){
 
         >
 
-            <h3>{title}</h3>
+            <h4>{title}</h4>
 
-            <h1>{value}</h1>
+            <h1
+
+                style={{
+
+                    marginTop:15,
+
+                    fontSize:40
+
+                }}
+
+            >
+
+                {value}
+
+            </h1>
 
         </div>
 

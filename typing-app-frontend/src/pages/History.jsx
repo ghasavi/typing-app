@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+
+import UserLayout from "../components/UserLayout";
+
 import { useTyping } from "../context/TypingContext";
 import api from "../api/axios";
 
@@ -33,8 +35,7 @@ export default function History() {
 
     return (
 
-        <>
-            <Navbar />
+        <UserLayout>
 
             <div
                 style={{
@@ -68,29 +69,37 @@ export default function History() {
 
                     <tbody>
 
-                    {results.map(result => (
+                    {
 
-                        <tr key={result.id}>
+                        results.map(result => (
 
-                            <td>{result.id}</td>
+                            <tr key={result.id}>
 
-                            <td>{result.wpm}</td>
+                                <td>{result.id}</td>
 
-                            <td>{result.accuracy}%</td>
+                                <td>{result.wpm}</td>
 
-                            <td>{result.time}s</td>
+                                <td>{result.accuracy}%</td>
 
-                            <td>
+                                <td>{result.time}s</td>
 
-                                {result.createdAt
-                                    ? new Date(result.createdAt).toLocaleString()
-                                    : "-"}
+                                <td>
 
-                            </td>
+                                    {
 
-                        </tr>
+                                        result.createdAt
+                                            ? new Date(result.createdAt).toLocaleString()
+                                            : "-"
 
-                    ))}
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                        ))
+
+                    }
 
                     </tbody>
 
@@ -98,7 +107,7 @@ export default function History() {
 
             </div>
 
-        </>
+        </UserLayout>
 
     );
 

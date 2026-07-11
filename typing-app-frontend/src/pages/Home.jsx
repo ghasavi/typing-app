@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
-import Navbar from "../components/Navbar";
+import UserLayout from "../components/UserLayout";
+
 import DifficultySelector from "../components/DifficultySelector";
 import TypingParagraph from "../components/TypingParagraph";
 import TypingBox from "../components/TypingBox";
@@ -18,15 +19,10 @@ export default function Home() {
     const {
 
         difficulty,
-
         setParagraph,
-
         wpm,
-
         accuracy,
-
         timeLeft,
-
         isFinished
 
     } = useTyping();
@@ -41,9 +37,7 @@ export default function Home() {
 
                 setParagraph(data.text);
 
-            }
-
-            catch(error){
+            } catch (error) {
 
                 console.error(error);
 
@@ -53,19 +47,11 @@ export default function Home() {
 
         loadParagraph();
 
-    }, [
-
-        difficulty,
-
-        setParagraph
-
-    ]);
+    }, [difficulty, setParagraph]);
 
     return (
 
-        <>
-
-            <Navbar />
+        <UserLayout>
 
             <div className="home-container">
 
@@ -74,9 +60,7 @@ export default function Home() {
                     <h1>TypingPro</h1>
 
                     <p>
-
                         Improve your typing speed and accuracy.
-
                     </p>
 
                 </div>
@@ -105,11 +89,9 @@ export default function Home() {
 
                         style={{
 
-                            textAlign:"center",
-
-                            marginTop:"25px",
-
-                            color:"#4caf50"
+                            textAlign: "center",
+                            marginTop: "25px",
+                            color: "#4caf50"
 
                         }}
 
@@ -124,27 +106,18 @@ export default function Home() {
                 <div className="stats-row">
 
                     <StatsCard
-
                         title="WPM"
-
                         value={wpm}
-
                     />
 
                     <StatsCard
-
                         title="Accuracy"
-
                         value={`${accuracy}%`}
-
                     />
 
                     <StatsCard
-
                         title="Time"
-
                         value={`${timeLeft}s`}
-
                     />
 
                 </div>
@@ -157,7 +130,7 @@ export default function Home() {
 
             </div>
 
-        </>
+        </UserLayout>
 
     );
 

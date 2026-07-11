@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
+import UserLayout from "../components/UserLayout";
 import { useTyping } from "../context/TypingContext";
 import api from "../api/axios";
 
@@ -23,9 +23,7 @@ export default function Leaderboard() {
 
             setLeaders(response.data);
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -35,8 +33,7 @@ export default function Leaderboard() {
 
     return (
 
-        <>
-            <Navbar />
+        <UserLayout>
 
             <div
                 style={{
@@ -69,21 +66,25 @@ export default function Leaderboard() {
 
                     <tbody>
 
-                    {leaders.map((user, index) => (
+                    {
 
-                        <tr key={user.id}>
+                        leaders.map((user, index) => (
 
-                            <td>{index + 1}</td>
+                            <tr key={user.id}>
 
-                            <td>{user.user.username}</td>
+                                <td>{index + 1}</td>
 
-                            <td>{user.wpm}</td>
+                                <td>{user.user.username}</td>
 
-                            <td>{user.accuracy}%</td>
+                                <td>{user.wpm}</td>
 
-                        </tr>
+                                <td>{user.accuracy}%</td>
 
-                    ))}
+                            </tr>
+
+                        ))
+
+                    }
 
                     </tbody>
 
@@ -91,7 +92,7 @@ export default function Leaderboard() {
 
             </div>
 
-        </>
+        </UserLayout>
 
     );
 

@@ -3,11 +3,8 @@ package com.example.typingapp.dto;
 public class AdminDashboardResponse {
 
     private long totalUsers;
-
     private long totalTests;
-
     private long totalParagraphs;
-
     private double averageWpm;
 
     public AdminDashboardResponse() {
@@ -56,5 +53,4 @@ public class AdminDashboardResponse {
     public void setAverageWpm(double averageWpm) {
         this.averageWpm = averageWpm;
     }
-
 }

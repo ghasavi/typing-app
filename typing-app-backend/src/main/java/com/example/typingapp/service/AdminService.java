@@ -40,15 +40,15 @@ public class AdminService {
 
     public AdminDashboardResponse getDashboard() {
 
-        long users = userRepository.count();
+        long totalUsers = userRepository.count();
 
-        long tests = resultRepository.count();
+        long totalTests = resultRepository.count();
 
-        long paragraphs = paragraphRepository.count();
+        long totalParagraphs = paragraphRepository.count();
 
-        List<TypingResult> results = resultRepository.findAll();
+        double averageWpm = resultRepository.findAll()
 
-        double averageWpm = results.stream()
+                .stream()
 
                 .mapToInt(TypingResult::getWpm)
 
@@ -58,13 +58,13 @@ public class AdminService {
 
         return new AdminDashboardResponse(
 
-                users,
+                totalUsers,
 
-                tests,
+                totalTests,
 
-                paragraphs,
+                totalParagraphs,
 
-                Math.round(averageWpm * 10.0) / 10.0
+                Math.round(averageWpm * 10) / 10.0
 
         );
 
