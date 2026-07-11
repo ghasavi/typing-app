@@ -1,18 +1,21 @@
 package com.example.typingapp.service;
 
+import com.example.typingapp.dto.AdminActivityResponse;
 import com.example.typingapp.dto.AdminDashboardResponse;
+import com.example.typingapp.dto.AdminUserResponse;
+import com.example.typingapp.model.Role;
 import com.example.typingapp.model.TypingResult;
+import com.example.typingapp.model.User;
 import com.example.typingapp.repository.ParagraphRepository;
 import com.example.typingapp.repository.TypingResultRepository;
 import com.example.typingapp.repository.UserRepository;
+
 import org.springframework.stereotype.Service;
-import com.example.typingapp.dto.AdminUserResponse;
-import com.example.typingapp.model.User;
-import com.example.typingapp.model.Role;
 
-import java.util.stream.Collectors;
-
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
