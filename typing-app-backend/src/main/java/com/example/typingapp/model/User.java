@@ -23,6 +23,9 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Column(unique = true)
+    private String email;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -47,7 +50,7 @@ public class User {
 
         createdAt = LocalDateTime.now();
 
-        if(role == null){
+        if (role == null) {
 
             role = Role.USER;
 
@@ -91,6 +94,18 @@ public class User {
 
     }
 
+    public String getEmail() {
+
+        return email;
+
+    }
+
+    public void setEmail(String email) {
+
+        this.email = email;
+
+    }
+
     public Role getRole() {
 
         return role;
@@ -128,11 +143,15 @@ public class User {
     }
 
     public boolean isActive() {
+
         return active;
+
     }
 
     public void setActive(boolean active) {
+
         this.active = active;
+
     }
 
 }

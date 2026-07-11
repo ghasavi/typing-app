@@ -1,49 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-
 import { BrowserRouter } from "react-router-dom";
 
+import App from "./App";
+
 import { TypingProvider } from "./context/TypingContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
-import "react-toastify/dist/ReactToastify.css";
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <React.StrictMode>
+        <BrowserRouter>
 
-import { ToastContainer } from "react-toastify";
+            <GoogleOAuthProvider
+                clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+            >
+                <TypingProvider>
+                    <App />
+                </TypingProvider>
+            </GoogleOAuthProvider>
 
-ReactDOM.createRoot(
-
-    document.getElementById("root")
-
-).render(
-
-    <BrowserRouter>
-
-        <TypingProvider>
-
-            <App />
-
-            <ToastContainer
-
-                position="top-right"
-
-                autoClose={2500}
-
-                hideProgressBar={false}
-
-                newestOnTop
-
-                closeOnClick
-
-                pauseOnHover
-
-                draggable
-
-                theme="dark"
-
-            />
-
-        </TypingProvider>
-
-    </BrowserRouter>
-
+        </BrowserRouter>
+    </React.StrictMode>
 );

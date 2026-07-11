@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+
 import { login } from "../services/authService";
-import {
-    notifySuccess,
-    notifyError
-} from "../utils/toast";
+import { notifySuccess, notifyError } from "../utils/toast";
 
 export default function Login() {
 
@@ -13,36 +12,89 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = async () => {
+    function saveUser(data) {
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.user.id);
+        localStorage.setItem("username", data.user.username);
+        localStorage.setItem("role", data.user.role);
+
+    }
+
+    function redirectUser(role) {
+
+        if (role === "ADMIN") {
+
+            navigate("/admin/dashboard");
+
+        } else {
+
+            navigate("/home");
+
+        }
+
+    }
+
+    async function handleLogin() {
 
         try {
 
             const data = await login(username, password);
 
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("userId", data.user.id);
-            localStorage.setItem("username", data.user.username);
-            localStorage.setItem("role", data.user.role);
+            saveUser(data);
 
             notifySuccess("Login successful!");
 
-            if (data.user.role === "ADMIN") {
-
-                navigate("/admin/dashboard");
-
-            } else {
-
-                navigate("/home");
-
-            }
+            redirectUser(data.user.role);
 
         } catch (error) {
 
-            notifyError("Invalid username or password!");
+            notifyError("Invalid username or password.");
 
         }
 
-    };
+    }
+
+    async function handleGoogleLogin(credentialResponse) {
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:8081/api/auth/google",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        credential: credentialResponse.credential
+                    })
+                }
+            );
+
+            if (!response.ok) {
+
+                throw new Error("Google login failed");
+
+            }
+
+            const data = await response.json();
+
+            saveUser(data);
+
+            notifySuccess("Welcome!");
+
+            redirectUser(data.user.role);
+
+        } catch (error) {
+
+            console.error(error);
+
+            notifyError("Google Login Failed");
+
+        }
+
+    }
 
     return (
 
@@ -68,8 +120,20 @@ export default function Login() {
             <br /><br />
 
             <button onClick={handleLogin}>
+
                 Login
+
             </button>
+
+            <br /><br />
+
+            <GoogleLogin
+
+                onSuccess={handleGoogleLogin}
+
+                onError={() => notifyError("Google Login Failed")}
+
+            />
 
         </div>
 
