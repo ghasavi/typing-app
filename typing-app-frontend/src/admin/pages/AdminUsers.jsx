@@ -6,402 +6,276 @@ import {
     toggleUserStatus
 } from "../services/adminService";
 import { toast } from "react-toastify";
+import {
+    FaSearch,
+    FaUser,
+    FaUserCog,
+    FaTrash,
+    FaBan,
+    FaCheckCircle,
+    FaUserShield,
+    FaCalendarAlt,
+    FaKeyboard
+} from "react-icons/fa";
+import "../../styles/admin.css";
 
 export default function AdminUsers() {
-
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const currentUsername = localStorage.getItem("username");
 
     async function loadUsers() {
-
         try {
-
             const data = await getUsers();
-
             setUsers(data);
-
         } catch (error) {
-
             console.error(error);
-
             toast.error("Failed to load users.");
-
         }
-
     }
 
     useEffect(() => {
-
         loadUsers();
-
     }, []);
 
     async function handleDelete(id, username) {
+        if (!window.confirm(`Delete user "${username}"? This action cannot be undone.`)) return;
 
-        if (!window.confirm(`Delete ${username}?`)) return;
-
+        setIsLoading(true);
         try {
-
             await deleteUser(id);
-
-            toast.success("User deleted successfully.");
-
+            toast.success(`User "${username}" deleted successfully.`);
             loadUsers();
-
         } catch (error) {
-
             toast.error(
-
-                error.response?.data?.message ||
-
-                "Unable to delete user."
-
+                error.response?.data?.message || "Unable to delete user."
             );
-
+        } finally {
+            setIsLoading(false);
         }
-
     }
 
-    async function handleToggle(id, active) {
+    async function handleToggle(id, active, username) {
+        const action = active ? "block" : "unblock";
+        if (!window.confirm(`Are you sure you want to ${action} "${username}"?`)) return;
 
+        setIsLoading(true);
         try {
-
             await toggleUserStatus(id);
-
             toast.success(
-
                 active
-
-                    ? "User blocked successfully."
-
-                    : "User unblocked successfully."
-
+                    ? `User "${username}" blocked successfully.`
+                    : `User "${username}" unblocked successfully.`
             );
-
             loadUsers();
-
         } catch (error) {
-
             toast.error(
-
-                error.response?.data?.message ||
-
-                "Unable to update user."
-
+                error.response?.data?.message || "Unable to update user."
             );
-
+        } finally {
+            setIsLoading(false);
         }
-
     }
 
     const filteredUsers = users.filter(user =>
-
         user.username
-
             .toLowerCase()
-
             .includes(search.toLowerCase())
-
     );
+
+    const getRoleBadge = (role) => {
+        if (role === "ADMIN") {
+            return (
+                <span className="badge badge-primary" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <FaUserShield />
+                    ADMIN
+                </span>
+            );
+        }
+        return (
+            <span className="badge" style={{
+                background: "#e8dce8",
+                color: "#6a5a7a",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px"
+            }}>
+                <FaUser />
+                USER
+            </span>
+        );
+    };
+
+    const getStatusBadge = (active) => {
+        if (active) {
+            return (
+                <span className="badge badge-success" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                    <FaCheckCircle />
+                    Active
+                </span>
+            );
+        }
+        return (
+            <span className="badge badge-danger" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                <FaBan />
+                Blocked
+            </span>
+        );
+    };
 
     return (
-
         <AdminLayout>
+            <div className="admin-header">
+                <h1 className="admin-title">
+                    User Management
+                </h1>
+                <div className="admin-header-actions">
+                    <span className="admin-last-updated">
+                        <FaUser />
+                        {users.length} users
+                    </span>
+                </div>
+            </div>
 
-            <h1 style={{ marginBottom: "25px" }}>
-                User Management
-            </h1>
-
-            <input
-
-                type="text"
-
-                placeholder="Search users..."
-
-                value={search}
-
-                onChange={(e) => setSearch(e.target.value)}
-
-                style={{
-
-                    width: "300px",
-
-                    padding: "12px",
-
-                    borderRadius: "8px",
-
-                    border: "none",
-
-                    marginBottom: "30px"
-
-                }}
-
-            />
-
-            <table
-
-                style={{
-
-                    width: "100%",
-
-                    borderCollapse: "collapse",
-
-                    background: "#1f2937",
-
-                    color: "white",
-
-                    borderRadius: "10px",
-
-                    overflow: "hidden"
-
-                }}
-
-            >
-
-                <thead>
-
-                <tr style={{ background: "#111827" }}>
-
-                    <th style={{ padding: "15px" }}>Username</th>
-
-                    <th>Role</th>
-
-                    <th>Status</th>
-
-                    <th>Tests</th>
-
-                    <th>Joined</th>
-
-                    <th>Actions</th>
-
-                </tr>
-
-                </thead>
-
-                <tbody>
-
-                {
-
-                    filteredUsers.map(user => (
-
-                        <tr
-
-                            key={user.id}
-
-                            style={{
-
-                                textAlign: "center",
-
-                                borderTop: "1px solid #374151"
-
-                            }}
-
+            <div className="admin-search-wrapper">
+                <div className="admin-search-container">
+                    <FaSearch className="admin-search-icon" />
+                    <input
+                        type="text"
+                        placeholder="Search users by username..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="admin-search-input"
+                    />
+                    {search && (
+                        <button
+                            onClick={() => setSearch("")}
+                            className="admin-search-clear"
                         >
+                            ✕
+                        </button>
+                    )}
+                </div>
+            </div>
 
-                            <td style={{ padding: "15px" }}>
-
-                                {user.username}
-
+            <div className="admin-table-container">
+                <table className="admin-table">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>
+                            <FaKeyboard style={{ marginRight: "6px" }} />
+                            Tests
+                        </th>
+                        <th>
+                            <FaCalendarAlt style={{ marginRight: "6px" }} />
+                            Joined
+                        </th>
+                        <th style={{ textAlign: "center" }}>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {filteredUsers.length === 0 ? (
+                        <tr>
+                            <td colSpan="6">
+                                <div className="admin-empty">
+                                    <div className="admin-empty-icon">👤</div>
+                                    <h3>No Users Found</h3>
+                                    <p>
+                                        {search
+                                            ? `No users match "${search}"`
+                                            : "No users registered yet"}
+                                    </p>
+                                </div>
                             </td>
-
-                            <td>
-
-                                {
-
-                                    user.role === "ADMIN"
-
-                                        ? "👑 ADMIN"
-
-                                        : "👤 USER"
-
-                                }
-
-                            </td>
-
-                            <td>
-
-                                <span
-
-                                    style={{
-
-                                        color: user.active
-
-                                            ? "#22c55e"
-
-                                            : "#ef4444",
-
-                                        fontWeight: "bold"
-
-                                    }}
-
-                                >
-
-                                    {
-
-                                        user.active
-
-                                            ? "🟢 Active"
-
-                                            : "🔴 Blocked"
-
-                                    }
-
-                                </span>
-
-                            </td>
-
-                            <td>
-
-                                {user.testsCompleted}
-
-                            </td>
-
-                            <td>
-
-                                {user.createdAt}
-
-                            </td>
-
-                            <td>
-
-                                {
-
-                                    user.username !== currentUsername && (
-
-                                        <>
-
-                                            <button
-
-                                                onClick={() =>
-
-                                                    handleToggle(
-
-                                                        user.id,
-
-                                                        user.active
-
-                                                    )
-
-                                                }
-
-                                                style={{
-
-                                                    background: user.active
-
-                                                        ? "#f59e0b"
-
-                                                        : "#22c55e",
-
-                                                    color: "white",
-
-                                                    border: "none",
-
-                                                    padding: "8px 14px",
-
-                                                    borderRadius: "6px",
-
-                                                    cursor: "pointer",
-
-                                                    marginRight: "10px"
-
-                                                }}
-
-                                            >
-
-                                                {
-
-                                                    user.active
-
-                                                        ? "Block"
-
-                                                        : "Unblock"
-
-                                                }
-
-                                            </button>
-
-                                            <button
-
-                                                onClick={() =>
-
-                                                    handleDelete(
-
-                                                        user.id,
-
-                                                        user.username
-
-                                                    )
-
-                                                }
-
-                                                style={{
-
-                                                    background: "#ef4444",
-
-                                                    color: "white",
-
-                                                    border: "none",
-
-                                                    padding: "8px 14px",
-
-                                                    borderRadius: "6px",
-
-                                                    cursor: "pointer"
-
-                                                }}
-
-                                            >
-
-                                                Delete
-
-                                            </button>
-
-                                        </>
-
-                                    )
-
-                                }
-
-                                {
-
-                                    user.username === currentUsername && (
-
-                                        <span
-
-                                            style={{
-
-                                                color: "#9ca3af",
-
-                                                fontStyle: "italic"
-
-                                            }}
-
-                                        >
-
-                                            Current User
-
-                                        </span>
-
-                                    )
-
-                                }
-
-                            </td>
-
                         </tr>
-
-                    ))
-
-                }
-
-                </tbody>
-
-            </table>
-
+                    ) : (
+                        filteredUsers.map(user => (
+                            <tr key={user.id}>
+                                <td>
+                                    <div className="admin-user-info">
+                                        <div className="admin-user-avatar">
+                                            {user.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="admin-username">
+                                                {user.username}
+                                            </span>
+                                        {user.username === currentUsername && (
+                                            <span className="admin-current-user-badge">
+                                                    You
+                                                </span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td>{getRoleBadge(user.role)}</td>
+                                <td>{getStatusBadge(user.active)}</td>
+                                <td>
+                                        <span className="admin-test-count">
+                                            {user.testsCompleted || 0}
+                                        </span>
+                                </td>
+                                <td className="admin-join-date">
+                                    {user.createdAt
+                                        ? new Date(user.createdAt).toLocaleDateString()
+                                        : "-"}
+                                </td>
+                                <td>
+                                    {user.username !== currentUsername ? (
+                                        <div className="admin-action-buttons">
+                                            <button
+                                                onClick={() =>
+                                                    handleToggle(
+                                                        user.id,
+                                                        user.active,
+                                                        user.username
+                                                    )
+                                                }
+                                                className={user.active ? "admin-btn-block" : "admin-btn-unblock"}
+                                                disabled={isLoading}
+                                            >
+                                                {user.active ? (
+                                                    <>
+                                                        <FaBan />
+                                                        Block
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <FaCheckCircle />
+                                                        Unblock
+                                                    </>
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(
+                                                        user.id,
+                                                        user.username
+                                                    )
+                                                }
+                                                className="admin-btn-delete"
+                                                disabled={isLoading}
+                                            >
+                                                <FaTrash />
+                                                Delete
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <span className="admin-current-user-label">
+                                                <FaUserCog />
+                                                Current User
+                                            </span>
+                                    )}
+                                </td>
+                            </tr>
+                        ))
+                    )}
+                    </tbody>
+                </table>
+            </div>
         </AdminLayout>
-
     );
-
 }

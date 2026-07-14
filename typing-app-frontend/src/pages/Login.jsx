@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 
 import { login } from "../services/authService";
-import { notifySuccess, notifyError } from "../utils/toast";
+import {
+
+    notifySuccess,
+    notifyError
+
+} from "../utils/toast";
 
 export default function Login() {
 
@@ -14,20 +19,49 @@ export default function Login() {
 
     function saveUser(data) {
 
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.user.id);
-        localStorage.setItem("username", data.user.username);
-        localStorage.setItem("role", data.user.role);
+        localStorage.setItem(
+
+            "token",
+
+            data.token
+
+        );
+
+        localStorage.setItem(
+
+            "userId",
+
+            data.user.id
+
+        );
+
+        localStorage.setItem(
+
+            "username",
+
+            data.user.username
+
+        );
+
+        localStorage.setItem(
+
+            "role",
+
+            data.user.role
+
+        );
 
     }
 
-    function redirectUser(role) {
+    function redirect(role) {
 
         if (role === "ADMIN") {
 
             navigate("/admin/dashboard");
 
-        } else {
+        }
+
+        else {
 
             navigate("/home");
 
@@ -37,19 +71,45 @@ export default function Login() {
 
     async function handleLogin() {
 
+        if (!username || !password) {
+
+            notifyError(
+
+                "Please enter your username and password."
+
+            );
+
+            return;
+
+        }
+
         try {
 
-            const data = await login(username, password);
+            const data = await login(
+
+                username,
+
+                password
+
+            );
 
             saveUser(data);
 
-            notifySuccess("Login successful!");
+            notifySuccess("Welcome back!");
 
-            redirectUser(data.user.role);
+            redirect(data.user.role);
 
-        } catch (error) {
+        }
 
-            notifyError("Invalid username or password.");
+        catch (error) {
+
+            notifyError(
+
+                error.response?.data ||
+
+                "Invalid username or password."
+
+            );
 
         }
 
@@ -60,21 +120,34 @@ export default function Login() {
         try {
 
             const response = await fetch(
+
                 "http://localhost:8081/api/auth/google",
+
                 {
+
                     method: "POST",
+
                     headers: {
+
                         "Content-Type": "application/json"
+
                     },
+
                     body: JSON.stringify({
-                        credential: credentialResponse.credential
+
+                        credential:
+
+                        credentialResponse.credential
+
                     })
+
                 }
+
             );
 
             if (!response.ok) {
 
-                throw new Error("Google login failed");
+                throw new Error();
 
             }
 
@@ -82,15 +155,23 @@ export default function Login() {
 
             saveUser(data);
 
-            notifySuccess("Welcome!");
+            notifySuccess(
 
-            redirectUser(data.user.role);
+                "Google Login Successful!"
 
-        } catch (error) {
+            );
 
-            console.error(error);
+            redirect(data.user.role);
 
-            notifyError("Google Login Failed");
+        }
+
+        catch (error) {
+
+            notifyError(
+
+                "Google Login Failed."
+
+            );
 
         }
 
@@ -98,42 +179,115 @@ export default function Login() {
 
     return (
 
-        <div>
+        <div className="auth-container">
 
-            <h1>Login</h1>
+            <div className="auth-card">
 
-            <input
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
+                <h1>Welcome Back</h1>
 
-            <br /><br />
+                <input
 
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                    type="text"
 
-            <br /><br />
+                    placeholder="Username"
 
-            <button onClick={handleLogin}>
+                    value={username}
 
-                Login
+                    onChange={(e) =>
 
-            </button>
+                        setUsername(e.target.value)
 
-            <br /><br />
+                    }
 
-            <GoogleLogin
+                />
 
-                onSuccess={handleGoogleLogin}
+                <input
 
-                onError={() => notifyError("Google Login Failed")}
+                    type="password"
 
-            />
+                    placeholder="Password"
+
+                    value={password}
+
+                    onChange={(e) =>
+
+                        setPassword(e.target.value)
+
+                    }
+
+                />
+
+                <button onClick={handleLogin}>
+
+                    Login
+
+                </button>
+
+                <div
+
+                    style={{
+
+                        marginTop: "20px",
+
+                        display: "flex",
+
+                        justifyContent: "center"
+
+                    }}
+
+                >
+
+                    <GoogleLogin
+
+                        onSuccess={handleGoogleLogin}
+
+                        onError={() =>
+
+                            notifyError(
+
+                                "Google Login Failed"
+
+                            )
+
+                        }
+
+                    />
+
+                </div>
+
+                <p
+
+                    style={{
+
+                        marginTop: "20px"
+
+                    }}
+
+                >
+
+                    <Link to="/forgot-password">
+
+                        Forgot Password?
+
+                    </Link>
+
+                </p>
+
+                <p>
+
+                    Don't have an account?
+
+                    {" "}
+
+                    <Link to="/register">
+
+                        Register
+
+                    </Link>
+
+                </p>
+
+            </div>
 
         </div>
 

@@ -57,7 +57,7 @@ export default function Home() {
 
                 <div className="home-header">
 
-                    <h1>TypingPro</h1>
+                    <h1>MizzyType</h1>
 
                     <p>
                         Improve your typing speed and accuracy.

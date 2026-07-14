@@ -1,12 +1,12 @@
 package com.example.typingapp.controller;
 
 import com.example.typingapp.dto.AuthResponse;
-import com.example.typingapp.service.UserService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 import com.example.typingapp.dto.ChangePasswordRequest;
+import com.example.typingapp.dto.LoginRequest;
+import com.example.typingapp.dto.RegisterRequest;
+import com.example.typingapp.service.UserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -16,31 +16,46 @@ public class AuthController {
     private final UserService service;
 
     public AuthController(UserService service) {
+
         this.service = service;
+
     }
+
+    // ========================= REGISTER =========================
 
     @PostMapping("/register")
-    public String register(@RequestBody Map<String, String> body) {
+    public String register(
 
-        return service.register(
-                body.get("username"),
-                body.get("password")
-        );
+            @RequestBody RegisterRequest request
+
+    ) {
+
+        return service.register(request);
+
     }
+
+    // ========================= LOGIN =========================
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody Map<String, String> body) {
+    public AuthResponse login(
 
-        return service.login(
-                body.get("username"),
-                body.get("password")
-        );
+            @RequestBody LoginRequest request
+
+    ) {
+
+        return service.login(request);
+
     }
+
+    // ========================= CHANGE PASSWORD =========================
 
     @PostMapping("/change-password")
     public String changePassword(
+
             Authentication authentication,
+
             @RequestBody ChangePasswordRequest request
+
     ) {
 
         return service.changePassword(
@@ -54,4 +69,5 @@ public class AuthController {
         );
 
     }
+
 }

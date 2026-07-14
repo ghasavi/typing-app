@@ -1,14 +1,14 @@
 package com.example.typingapp.service;
 
 import com.example.typingapp.dto.AuthResponse;
+import com.example.typingapp.dto.LoginRequest;
+import com.example.typingapp.dto.RegisterRequest;
 import com.example.typingapp.dto.UserResponse;
 import com.example.typingapp.model.User;
 import com.example.typingapp.repository.UserRepository;
 import com.example.typingapp.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,71 +17,109 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public UserService(UserRepository repo,
-                       PasswordEncoder passwordEncoder,
-                       JwtService jwtService) {
-
+    public UserService(
+            UserRepository repo,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
+    ) {
         this.repo = repo;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
-    public String register(String username, String password) {
+    // ========================= REGISTER =========================
 
-        if (repo.findByUsername(username).isPresent()) {
-            return "Username already exists!";
+    public String register(RegisterRequest request) {
+
+        if (repo.findByUsername(request.getUsername()).isPresent()) {
+
+            throw new RuntimeException("Username already exists.");
+
+        }
+
+        if (repo.findByEmail(request.getEmail()).isPresent()) {
+
+            throw new RuntimeException("Email already registered.");
+
         }
 
         User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         repo.save(user);
 
         return "User registered successfully!";
     }
 
-    public AuthResponse login(String username, String password) {
+    // ========================= LOGIN =========================
 
-        Optional<User> userOpt = repo.findByUsername(username);
+    public AuthResponse login(LoginRequest request) {
 
-        if (userOpt.isEmpty()) {
+        User user = repo.findByUsername(request.getUsername())
+
+                .orElseThrow(() ->
+                        new RuntimeException("Invalid username or password"));
+
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+
             throw new RuntimeException("Invalid username or password");
+
         }
 
-        User user = userOpt.get();
+        if (!user.isActive()) {
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid username or password");
+            throw new RuntimeException("Your account has been blocked.");
+
         }
 
         String token = jwtService.generateToken(user.getUsername());
 
         UserResponse userResponse = new UserResponse(
+
                 user.getId(),
                 user.getUsername(),
                 user.getRole().name()
+
         );
 
         return new AuthResponse(token, userResponse);
+
     }
 
-    public String changePassword(String username,
-                                 String currentPassword,
-                                 String newPassword) {
+    // ========================= CHANGE PASSWORD =========================
+
+    public String changePassword(
+
+            String username,
+            String currentPassword,
+            String newPassword
+
+    ) {
 
         User user = repo.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("Current password is incorrect");
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(
+                currentPassword,
+                user.getPassword())) {
+
+            throw new RuntimeException("Current password is incorrect.");
+
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
 
         repo.save(user);
 
-        return "Password changed successfully!";
+        return "Password changed successfully.";
 
     }
+
 }

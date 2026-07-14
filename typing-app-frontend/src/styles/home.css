@@ -1,82 +1,454 @@
-.home-container{
-
-    width:90%;
-    max-width:1200px;
-
-    margin:40px auto;
-
+/* ---------- Home Container ---------- */
+.home-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
-.home-header{
-
-    text-align:center;
-
-    margin-bottom:40px;
-
+/* ---------- Header ---------- */
+.home-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #f8f0ff 0%, #f0f4ff 100%);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(186, 168, 220, 0.15);
+    border: 1px solid #e8e0f0;
 }
 
-.home-header h1{
-
-    color:#e2b714;
-
-    font-size:48px;
-
-    margin-bottom:10px;
-
+.home-header h1 {
+    color: #6b5b8a;
+    font-size: 48px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
-.home-header p{
-
-    color:#646669;
-
-    font-size:18px;
-
+.home-header h1 span {
+    background: linear-gradient(135deg, #c4b5fd, #ddd6fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.top-controls{
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    gap:30px;
-
-    margin-bottom:35px;
-
+.home-header p {
+    color: #8a7a9a;
+    font-size: 18px;
+    font-weight: 400;
 }
 
-.typing-card{
-
-    background:#2c2e31;
-
-    border-radius:20px;
-
-    padding:40px;
-
+/* ---------- Top Controls ---------- */
+.top-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
 }
 
-.stats-row{
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:30px;
-
-    margin-top:40px;
-
-    flex-wrap:wrap;
-
+/* ---------- Typing Card ---------- */
+.typing-card {
+    background: linear-gradient(145deg, #f8f0ff, #f0f4ff);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(186, 168, 220, 0.12);
+    border: 1px solid #e8e0f0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.restart-row{
+.typing-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #c7b8d8, #b8c8e8, #c7b8d8);
+    opacity: 0.6;
+}
 
-    display:flex;
+.typing-card:hover {
+    box-shadow: 0 12px 40px rgba(186, 168, 220, 0.2);
+    border-color: #d8ccdc;
+}
 
-    justify-content:center;
+/* ---------- Stats Row ---------- */
+.stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
 
-    margin-top:35px;
+/* ---------- Restart Row ---------- */
+.restart-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 35px;
+}
 
+/* ---------- Completion Message ---------- */
+.completion-message {
+    text-align: center;
+    margin-top: 25px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-radius: 16px;
+    color: #3a6a4a;
+    font-size: 24px;
+    font-weight: 700;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+    border: 2px solid rgba(167, 243, 208, 0.3);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* ---------- Difficulty Selector Overrides ---------- */
+.difficulty-selector {
+    display: flex;
+    gap: 12px;
+    background: #f5ecf5;
+    padding: 6px;
+    border-radius: 14px;
+    border: 2px solid #e8e0f0;
+}
+
+.difficulty-selector button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #7a6a8a;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 15px;
+}
+
+.difficulty-selector button:hover {
+    background: rgba(200, 188, 220, 0.2);
+    color: #5a4a6a;
+}
+
+.difficulty-selector button.active {
+    background: linear-gradient(135deg, #c7b8d8, #b8c8e8);
+    color: #5a4a6a;
+    box-shadow: 0 4px 12px rgba(186, 168, 220, 0.3);
+}
+
+/* ---------- Timer Overrides ---------- */
+.timer-display {
+    font-size: 28px;
+    font-weight: 700;
+    color: #6b5b8a;
+    background: #f5ecf5;
+    padding: 10px 24px;
+    border-radius: 14px;
+    border: 2px solid #e8e0f0;
+    min-width: 100px;
+    text-align: center;
+}
+
+.timer-display.warning {
+    color: #b86a6a;
+    border-color: #f0c8c8;
+    animation: timerWarning 1s ease-in-out infinite;
+}
+
+@keyframes timerWarning {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* ---------- Typing Paragraph Overrides ---------- */
+.typing-paragraph {
+    font-size: 22px;
+    line-height: 1.8;
+    color: #6a5a7a;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    min-height: 120px;
+    border: 1px solid #e8e0f0;
+}
+
+.typing-paragraph .char-correct {
+    color: #4a8a5a;
+    background: rgba(167, 243, 208, 0.2);
+}
+
+.typing-paragraph .char-incorrect {
+    color: #b85a5a;
+    background: rgba(245, 208, 208, 0.3);
+}
+
+.typing-paragraph .char-current {
+    background: linear-gradient(135deg, #c7b8d8, #b8c8e8);
+    color: #ffffff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    animation: cursorBlink 0.8s ease-in-out infinite;
+}
+
+@keyframes cursorBlink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* ---------- Typing Box Overrides ---------- */
+.typing-box {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 20px;
+    border: 2px solid #e8e0f0;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.6);
+    color: #4a3a5a;
+    transition: all 0.25s;
+    outline: none;
+    font-family: inherit;
+}
+
+.typing-box:focus {
+    border-color: #c7b8d8;
+    box-shadow: 0 0 0 4px rgba(199, 184, 216, 0.15);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.typing-box:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---------- Stats Card Overrides ---------- */
+.stats-card {
+    background: linear-gradient(145deg, #f8f0ff, #f0f4ff);
+    border-radius: 16px;
+    padding: 24px 32px;
+    text-align: center;
+    min-width: 120px;
+    border: 1px solid #e8e0f0;
+    box-shadow: 0 4px 15px rgba(186, 168, 220, 0.08);
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(186, 168, 220, 0.15);
+    border-color: #d8ccdc;
+}
+
+.stats-card .stats-label {
+    color: #8a7a9a;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.stats-card .stats-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #6b5b8a;
+}
+
+.stats-card .stats-value.high {
+    background: linear-gradient(135deg, #a7f3d0, #d1fae5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stats-card .stats-value.medium {
+    background: linear-gradient(135deg, #fde68a, #fef3c7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stats-card .stats-value.low {
+    background: linear-gradient(135deg, #fbcfe8, #fce7f3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ---------- Restart Button Overrides ---------- */
+.restart-button {
+    padding: 14px 40px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #c7b8d8, #b8c8e8);
+    color: #5a4a6a;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 15px rgba(186, 168, 220, 0.2);
+}
+
+.restart-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(186, 168, 220, 0.3);
+}
+
+.restart-button:active {
+    transform: scale(0.95);
+}
+
+.restart-button svg {
+    margin-right: 8px;
+}
+
+/* ---------- Responsive Design ---------- */
+@media (max-width: 1024px) {
+    .home-container {
+        width: 95%;
+        margin: 30px auto;
+    }
+
+    .home-header h1 {
+        font-size: 38px;
+    }
+
+    .typing-card {
+        padding: 30px;
+    }
+
+    .typing-paragraph {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-container {
+        width: 100%;
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    .home-header {
+        padding: 20px 15px;
+    }
+
+    .home-header h1 {
+        font-size: 30px;
+    }
+
+    .home-header p {
+        font-size: 16px;
+    }
+
+    .top-controls {
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .typing-card {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .typing-paragraph {
+        font-size: 18px;
+        padding: 15px;
+        min-height: 80px;
+    }
+
+    .typing-box {
+        font-size: 18px;
+        padding: 14px 16px;
+    }
+
+    .stats-row {
+        gap: 15px;
+    }
+
+    .stats-card {
+        padding: 18px 20px;
+        min-width: 80px;
+        flex: 1;
+    }
+
+    .stats-card .stats-value {
+        font-size: 28px;
+    }
+
+    .completion-message {
+        font-size: 20px;
+        padding: 12px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-header h1 {
+        font-size: 24px;
+    }
+
+    .home-header p {
+        font-size: 14px;
+    }
+
+    .typing-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .typing-paragraph {
+        font-size: 16px;
+        padding: 12px;
+        min-height: 60px;
+        line-height: 1.6;
+    }
+
+    .typing-box {
+        font-size: 16px;
+        padding: 12px 14px;
+    }
+
+    .stats-card {
+        padding: 14px 16px;
+        min-width: 60px;
+    }
+
+    .stats-card .stats-value {
+        font-size: 22px;
+    }
+
+    .stats-card .stats-label {
+        font-size: 12px;
+    }
+
+    .restart-button {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+
+    .completion-message {
+        font-size: 18px;
+        padding: 10px 16px;
+    }
 }
