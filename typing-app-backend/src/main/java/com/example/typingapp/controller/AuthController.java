@@ -1,10 +1,8 @@
 package com.example.typingapp.controller;
 
-import com.example.typingapp.dto.AuthResponse;
-import com.example.typingapp.dto.ChangePasswordRequest;
-import com.example.typingapp.dto.LoginRequest;
-import com.example.typingapp.dto.RegisterRequest;
+import com.example.typingapp.dto.*;
 import com.example.typingapp.service.UserService;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +19,6 @@ public class AuthController {
 
     }
 
-    // ========================= REGISTER =========================
-
     @PostMapping("/register")
     public String register(
 
@@ -33,8 +29,6 @@ public class AuthController {
         return service.register(request);
 
     }
-
-    // ========================= LOGIN =========================
 
     @PostMapping("/login")
     public AuthResponse login(
@@ -47,7 +41,16 @@ public class AuthController {
 
     }
 
-    // ========================= CHANGE PASSWORD =========================
+    @PostMapping("/google")
+    public AuthResponse googleLogin(
+
+            @RequestBody GoogleLoginRequest request
+
+    ) throws Exception {
+
+        return service.loginWithGoogle(request);
+
+    }
 
     @PostMapping("/change-password")
     public String changePassword(

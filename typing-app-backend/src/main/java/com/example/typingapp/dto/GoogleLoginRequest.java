@@ -8,15 +8,10 @@ public class GoogleLoginRequest {
     }
 
     public String getCredential() {
-
         return credential;
-
     }
 
     public void setCredential(String credential) {
-
         this.credential = credential;
-
     }
-
 }
