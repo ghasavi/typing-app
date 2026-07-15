@@ -285,6 +285,16 @@ export default function Login() {
 
                     </Link>
 
+                    <br /><br />
+
+                    <Link to="/forgot-password">
+
+                        Forgot Password?
+
+                    </Link>
+
+                    <br /><br />
+
                 </p>
 
             </div>

@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Statistics from "./pages/Statistics";
 import History from "./pages/History";
+import ForgotPassword from "./pages/ForgotPassword";
 
 import AdminDashboard from "./admin/pages/AdminDashboard";
 import AdminUsers from "./admin/pages/AdminUsers";
@@ -59,6 +60,11 @@ function App() {
                         <Home />
                     </ProtectedRoute>
                 }
+            />
+
+            <Route
+                path="/forgot-password"
+                element={<ForgotPassword />}
             />
 
             <Route
