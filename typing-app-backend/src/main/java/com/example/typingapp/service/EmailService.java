@@ -50,7 +50,16 @@ If you didn't request a password reset, simply ignore this email.
 Typing App
 """.formatted(otp));
 
-        mailSender.send(message);
+        try {
+
+            mailSender.send(message);
+            System.out.println("EMAIL SENT SUCCESSFULLY");
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
 
     }
 
