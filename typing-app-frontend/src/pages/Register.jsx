@@ -15,28 +15,41 @@ export default function Register() {
     const [isLoading, setIsLoading] = useState(false);
 
     async function handleRegister() {
+        console.log("1. Button clicked");
+
         if (!username || !email || !password) {
+            console.log("2. Empty field");
             notifyError("Please fill in all fields.");
             return;
         }
 
         if (password.length < 6) {
+            console.log("3. Password too short");
             notifyError("Password must be at least 6 characters long.");
             return;
         }
 
+        console.log("4. About to call register()");
+
         setIsLoading(true);
+
         try {
             const message = await register(username, email, password);
+
+            console.log("5. Register finished", message);
+
             notifySuccess(message);
+
             navigate("/login");
         } catch (error) {
-            notifyError(
-                error.response?.data || "Registration failed."
-            );
-        } finally {
-            setIsLoading(false);
+
+            console.log("REGISTER ERROR");
+            console.log(error);
+
+            notifyError(error.response?.data || "Registration failed.");
         }
+
+        setIsLoading(false);
     }
 
     return (
