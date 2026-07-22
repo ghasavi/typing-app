@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7de29515-3644-4cf8-9aea-f87291896e0e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/typing-app-backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/typing-app-backend/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/typing-app-backend/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typing-app-backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/typing-app-backend/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/typing-app-backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/typing-app-backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typing-app-frontend/src/pages/Register.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/typing-app-frontend/src/pages/Register.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +128,8 @@
       <workItem from="1784029875062" duration="5680000" />
       <workItem from="1784114851595" duration="8207000" />
       <workItem from="1784202211452" duration="6011000" />
-      <workItem from="1784638814090" duration="3381000" />
+      <workItem from="1784638814090" duration="4056000" />
+      <workItem from="1784725522419" duration="900000" />
     </task>
     <task id="LOCAL-00001" summary="Random paragraph generator fixed">
       <option name="closed" value="true" />
