@@ -1,13 +1,10 @@
 services:
   - type: web
     name: typing-app-backend
-    runtime: java
-
+    env: java
     rootDir: typing-app-backend
-
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/typingapp-0.0.1-SNAPSHOT.jar
-
     plan: free
 
     envVars:
