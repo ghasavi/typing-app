@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: typing-app-backend
+    runtime: java
+
+    rootDir: typing-app-backend
+
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/typingapp-0.0.1-SNAPSHOT.jar
+
+    plan: free
+
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
